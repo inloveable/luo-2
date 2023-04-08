@@ -6,6 +6,9 @@
 #include <memory>
 #include <mutex>
 #include"../defs.h"
+#include "progresscontroller.hpp"
+//同一个病人可以对应多个检查信息
+//即PatientInfo->multi->CheckInfo
 class  DataManager : public QObject
 {
     Q_OBJECT
@@ -33,7 +36,13 @@ public:
                                           ,const QString& docId,const QString& picturePath);
 
     std::unique_ptr<UserInfo>&  getCurretnUser(){return currentUser;};
-    std::unique_ptr<CheckInfo>& getPatientInfo(){return currentPatient;};
+    std::unique_ptr<PatientInfo>& getPatientInfo(){return currentPatient;};
+
+
+    void adoptProgressBar(QProgressBar* bar);
+
+public slots:
+    bool setCurrentUser(const QString& account,const QString& docId);
 signals:
 
  private:
@@ -45,13 +54,21 @@ signals:
     QMap<DirectoryPath,QString> directories;
 
     std::unique_ptr<UserInfo> currentUser=nullptr;
-    std::unique_ptr<CheckInfo> currentPatient=nullptr;
+    std::unique_ptr<PatientInfo> currentPatient=nullptr;
 
     void readAllUserInfoFromDatabase();
     void writeAllUserInfoToDatabase();
 
     std::vector<UserInfo> users;
-    std::vector<CheckInfo> records;
+    std::vector<PatientInfo> patients;
+
+    //this string is based on the open time of a test file,and used MD5 cyrpto.
+    QString identicalHashMarkForAnalize="";
+    void makeAnalizeMarkIdentical();
+
+    ProgressController* controller=nullptr;
+
+
 };
 
 #endif // DATAMANAGER_H

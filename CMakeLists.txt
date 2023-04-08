@@ -15,6 +15,10 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets WebEngineWidgets 
 enable_testing()
 
 
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+    add_definitions(-DDEBU)
+endif()
+
 add_subdirectory(test)
 add_subdirectory(DataManager)
 
@@ -41,6 +45,8 @@ set(PROJECT_SOURCES
         vipswrapper.hpp vipswrapper.cpp
         resources.qrc
         networkmanager.hpp networkmanager.cpp
+        inputcheckinfowidget.hpp inputcheckinfowidget.cpp inputcheckinfowidget.ui
+        webviewwidget.hpp webviewwidget.cpp
         defs.h
 
 

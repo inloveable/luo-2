@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.0
 import QtQuick.Shapes 1.14
+import myCpp 1.0
 Rectangle
 {
      id:selectionwindow;
@@ -124,6 +125,11 @@ Rectangle
                     GradientStop { position: 0.911; color: "#096fe0" }
                     orientation: Gradient.Horizontal
                 }
+         }
+
+         onClicked: {
+             loginWindow.hide();
+             MainWindow.intoTCTAnalize();
          }
 
      }

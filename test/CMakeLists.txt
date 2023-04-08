@@ -10,6 +10,8 @@ include_directories(${VIPSPATH}/include/glib-2.0)
 include_directories(${VIPSPATH}/lib/glib-2.0/include)
 link_directories(${VIPSPATH}/lib)
 
+
+
 list(APPEND CMAKE_PREFIX_PATH "C:/Program Files (x86)/googletest-distribution" )
 find_package(GTest REQUIRED)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
@@ -17,6 +19,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 set(GTestFiles
     ../vipswrapper.hpp
     ../vipswrapper.cpp
+
     maintest.hpp maintest.cpp
 )
 

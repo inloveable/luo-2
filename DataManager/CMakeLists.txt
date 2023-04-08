@@ -14,23 +14,24 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 find_package(glog REQUIRED)
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets SerialPort sql)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets SerialPort sql)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets SerialPort sql PrintSupport)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets SerialPort sql PrintSupport)
 
 set(PROJECT_SOURCES
     datamanager.h datamanager.cpp
 
     libqsql.cpp
     libqsql.h
-
-
+    mprinter.cpp
+    mprinter.h
+    progresscontroller.hpp progresscontroller.cpp
 )
 
 add_library(LDataManager OBJECT ${PROJECT_SOURCES})
 
 
 target_link_libraries(LDataManager PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-     Qt${QT_VERSION_MAJOR}::SerialPort Qt${QT_VERSION_MAJOR}::Sql glog::glog)
+     Qt${QT_VERSION_MAJOR}::SerialPort Qt${QT_VERSION_MAJOR}::Sql glog::glog Qt${QT_VERSION_MAJOR}::PrintSupport)
 target_include_directories(LDataManager PUBLIC .)
 
 set_target_properties(LDataManager PROPERTIES

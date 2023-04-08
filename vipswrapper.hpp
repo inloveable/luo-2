@@ -31,6 +31,7 @@ class Utility
 
       //returns time cost
     static qint64 removeDir(const QString& dir);
+    static QString hashStringMd5(const QString& hased);
 
     //must be called coupled
    static void calcuBegin();

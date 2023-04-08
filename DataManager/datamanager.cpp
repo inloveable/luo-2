@@ -1,14 +1,18 @@
 ﻿#include "datamanager.h"
 #include"libqsql.h"
+#include "progresscontroller.hpp"
 #include "qapplication.h"
+#include "qdatetime.h"
+#include "qprogressbar.h"
 #include "qsqldatabase.h"
 
 
 #include<QSqlDatabase>
 #include<QSqlQuery>
 #include<QSqlError>
-
+#include"../vipswrapper.hpp"
 #include<glog/logging.h>
+#include <memory>
 SINGLETON_IMPLEMENT(DataManager)
 
 DataManager::DataManager(QObject *parent)
@@ -80,7 +84,19 @@ void DataManager::initializeDatabase()
 int DataManager::checkIfUserInDataBase(const QString& account,const QString& password)
 {
 
-    return -1;
+    for(auto&& i: m_pInstance->users)
+    {
+        if(i.account==account)
+        {
+            if(i.password==password)
+            {
+                m_pInstance->setCurrentUser(account,i.doctorName);
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 void DataManager::readAllUserInfoFromDatabase()
@@ -173,5 +189,39 @@ int DataManager::writeAccountInfoToDatabase(const QString& account,const QString
 
     users.emplace_back(info);
 
+
+
     return 0;
+}
+
+void DataManager::makeAnalizeMarkIdentical()
+{
+    auto currentDateTime=QDateTime::currentDateTime().toString("MM.dd.hh.mm.ss");
+    this->identicalHashMarkForAnalize=Utility::hashStringMd5(currentDateTime);
+}
+
+bool DataManager::setCurrentUser(const QString& account,const QString& docId)
+{
+    for(auto&& i:users)
+    {
+        if(i.account==account)
+        {
+            if(i.doctorName==docId)
+            {
+                currentUser=std::make_unique<UserInfo>(i);
+                LOG(INFO)<<"current User updated Hello doctor:"<<docId.toStdString();
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void DataManager::adoptProgressBar(QProgressBar* bar)
+{
+    if(controller==nullptr)
+    {
+        controller=new ProgressController(this);
+    }
+    controller->adoptProgressBar(bar);
 }

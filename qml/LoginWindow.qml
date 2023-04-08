@@ -58,6 +58,10 @@ ApplicationWindow{
            }
         }
 
+        function onShowMainArea(){
+            loginWindow.show();
+        }
+
     }
 
 
@@ -75,16 +79,6 @@ ApplicationWindow{
         anchors.fill: parent
         orientation: Qt.Horizontal
         interactive:false
-        property var easingCurve: Easing.OutCubic
-        transitions: [
-                Transition {
-                    NumberAnimation {
-                        properties: "x,width"
-                        easing.type: parent.easingCurve.type
-                        duration: 500
-                    }
-                }
-            ]
 
         SelectionWindow{
             id:selectionWindow
@@ -274,7 +268,7 @@ ApplicationWindow{
                     text:"登录"
 
                     onClicked: {
-                        MainWindow.login(userInfoInput,passwordInput.text)
+                        MainWindow.login(userInfoInput.text,passwordInput.text)
                     }
 
                 }

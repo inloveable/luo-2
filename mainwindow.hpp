@@ -20,6 +20,20 @@ public:
     void onLoginResult(bool result,QString message);
 
     Q_INVOKABLE int tryRegister(QString account,QString password,QString doctorName);
+    Q_INVOKABLE int intoTCTAnalize();
+    Q_INVOKABLE void setCurrentPatient(QString name,QString age,QString sex,
+                                    QString checkTime,
+                                    QString identity
+                                   ,QString phoneNum,
+                                    QString hasCance,
+                                    QString hasHPV);
+    //添加病人和病人检查日志是两个不同的概念
+    Q_INVOKABLE void addPatient(QString name,QString age,QString sex,
+                                    QString checkTime,
+                                    QString identity
+                                    ,QString phoneNum,
+                                    QString hasCance,
+                                    QString hasHPV);
 
 signals:
     void loginResult(bool result,QString message);
@@ -27,6 +41,8 @@ signals:
 
     int askRegister(const QString& account,const QString& password
                     ,const QString& docId,const QString& picturePath);
+
+    void showMainArea();
 private:
 
     MainWindow* mainwindow;
@@ -44,7 +60,7 @@ public:
 
     //qml slots
 
-
+    void  reEnter();
 
  signals:
 
@@ -57,6 +73,8 @@ private:
     QThread* backEndThread=nullptr;
     NetworkManager* network=nullptr;
     void connectNetworkSignals();
+
+    void initUi();
 
 
 

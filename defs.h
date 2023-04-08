@@ -20,8 +20,8 @@ private:\
 }\
  \
 
-
-struct CheckInfo{
+//只是为了打印而存在
+struct PrintInfo{
     QString name;
     QString gender;
     int age;
@@ -43,6 +43,14 @@ struct CheckInfo{
     QString signaturePath;
 };
 
+struct CheckInfo{
+    QString checkDepartment;
+    QString checkPositon;
+    QString checkDate;
+    QString illAbstract;
+    QString CheckResult;
+};
+
 struct PatientInfo
 {
     PatientInfo():m_patientName(""),m_patientAge(""),
@@ -50,17 +58,15 @@ struct PatientInfo
         m_patientId(""),
         m_patientState1(""),
         m_patientState2(""),
-        m_DocId(""),
-        CheckDate(""){}
+        loginDate(""){}
     QString m_patientName;
     QString m_patientAge;
     QString m_patientSex;
     QString m_patientPhone;
     QString m_patientId;
     QString m_patientState1;
-    QString m_patientState2;
-    QString m_DocId;
-    QString CheckDate;
+    QString m_patientState2;  
+    QString loginDate;
 
     bool extra=false;
 };

@@ -7,7 +7,7 @@
 #include <chrono>
 #include <iostream>
 #include <qDebug>
-
+#include<QCryptographicHash>
 
 std::chrono::time_point<std::chrono::high_resolution_clock> Utility::begin;
 std::chrono::time_point<std::chrono::high_resolution_clock> Utility::end;
@@ -68,4 +68,11 @@ qint64 Utility::calcuEnd()
     auto end=std::chrono::high_resolution_clock::now();
     return std::chrono::duration_cast
                       <std::chrono::milliseconds>(end-begin).count();
+}
+
+
+QString Utility::hashStringMd5(const QString& hashed)
+{
+     QByteArray hash = QCryptographicHash::hash(hashed.toUtf8(), QCryptographicHash::Md5);
+    return hash;
 }

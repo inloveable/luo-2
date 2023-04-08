@@ -5,6 +5,7 @@
 #include<QQuickWindow>
 #include"networkmanager.hpp"
 #include"datamanager.h"
+#include "qfilesystemwatcher.h"
 #include "qnamespace.h"
 #include "qqml.h"
 #include "qqmlapplicationengine.h"
@@ -14,11 +15,17 @@
 #include <exception>
 
 #include<glog/logging.h>
+
+#ifdef DEBUG
+#include<QFileSystemWatcher>
+#endif
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
     communicator=new QmlCommunicator(this,this);
+
+    setWindowTitle("TCT分析");
     qmlRegisterSingletonInstance("myCpp",1,0,"MainWindow",communicator);
     try{
         engine=new QQmlApplicationEngine(QUrl{"qrc:/qml/LoginWindow.qml"});
@@ -28,12 +35,30 @@ MainWindow::MainWindow(QWidget *parent)
         LOG(INFO)<<"QML trigged kernal exceptionL"<<ex.what();
     }
 
+
+
+    initUi();
+
     network=new NetworkManager();
     backEndThread=new QThread;
     connectNetworkSignals();
     backEndThread->start();
     network->moveToThread(backEndThread);
-    DataManager::GetInstance()->moveToThread(backEndThread);
+    //DataManager::GetInstance()->moveToThread(backEndThread);
+
+#ifdef DEBUG
+    QFileSystemWatcher* watcher=new QFileSystemWatcher(this);
+    watcher->addPath("./appCache/mainwindow.qss");
+
+    connect(watcher,&QFileSystemWatcher::fileChanged,this,[=]()
+            {
+                QFile file{"./appCache/mainwindow.qss"};
+                file.open(QIODevice::ReadOnly);
+                auto array=file.readAll();
+
+                this->setStyleSheet(array);
+            });
+#endif
 
 }
 
@@ -56,7 +81,7 @@ void QmlCommunicator::onLoginResult(bool result,QString message)
 {
     if(result==true)
     {
-        //mainwindow->show();
+
     }
     emit loginResult(result,message);
 
@@ -92,5 +117,65 @@ int QmlCommunicator::tryRegister(QString account,QString password,QString doctor
     }
     return ret;
 }
+
+int QmlCommunicator::intoTCTAnalize(){
+    mainwindow->reEnter();
+    mainwindow->show();
+    return 0;
+}
+
+void MainWindow::initUi()
+{
+    QAction* goBack=new QAction{"返回主界面",this};
+    ui.menu->addAction(goBack);
+
+    connect(goBack,&QAction::triggered,this,[=]()
+            {
+               emit communicator->showMainArea();
+               this->close();
+            });
+
+    DataManager::GetInstance()->adoptProgressBar(ui.progressBar);
+
+}
+
+void MainWindow::reEnter()
+{
+   //TODO:
+   //refresh ui with newly changed data,or may flush for nex Analize
+
+    LOG(WARNING)<<"reentering";
+}
+
+void QmlCommunicator::setCurrentPatient(QString name,QString age,QString sex,
+                                     QString checkTime,
+                                     QString identity
+                                     ,QString phoneNum,
+                                     QString hasCance,
+                                     QString hasHPV)
+{
+
+}
+
+void QmlCommunicator::addPatient(QString name,QString age,QString sex,
+                                        QString checkTime,
+                                        QString identity
+                                        ,QString phoneNum,
+                                        QString hasCance,
+                                        QString hasHPV)
+{
+    PatientInfo patient;
+    patient.m_patientName=name;
+    patient.m_patientAge=age;
+    patient.m_patientId=identity;
+    patient.m_patientPhone=phoneNum;
+    patient.m_patientSex=sex;
+    patient.m_patientState1=hasCance;
+    patient.m_patientState2=hasHPV;
+    patient.loginDate=checkTime;
+
+}
+
+
 
 

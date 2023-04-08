@@ -108,5 +108,6 @@
         <file>qml/PatientInfo.qml</file>
         <file>qml/AddPatientPage.qml</file>
         <file>resources/images/flowLogo.png</file>
+        <file>resources/config/config.json</file>
     </qresource>
 </RCC>
