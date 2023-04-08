@@ -50,6 +50,7 @@ ApplicationWindow{
         {
            if(result===true)
            {
+                selectionWindow.currentDoctorName=MainWindow.getCurrentDoctorName()
                 loginWindow.setCurrentIndex(0);
            }
            else

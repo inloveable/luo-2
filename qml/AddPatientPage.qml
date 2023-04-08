@@ -1,6 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 6.3
-
+import myCpp 1.0
 Rectangle {
     id:addPatientPage
 
@@ -8,7 +8,9 @@ Rectangle {
     height:600
 
     signal returnSignal();
-
+    signal addPatientSignal(string p_name,string p_age,string p_time,
+                      string p_identity,
+                      string p_phone,string p_hasCancer,string p_hasHPV,string p_Sex)
     color:"antiquewhite"
     radius:10
     Text {
@@ -171,6 +173,7 @@ Rectangle {
         border.width: 1
         anchors.left: label.right
         TextInput {
+            id:ageInput
             anchors.fill: parent
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
@@ -206,6 +209,7 @@ Rectangle {
         border.width: 1
         anchors.left: label.right
         TextInput {
+            id:commucateInput
             anchors.fill: parent
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
@@ -239,6 +243,7 @@ Rectangle {
         border.width: 1
         anchors.left: label.right
         TextInput {
+            id:nameInput
             anchors.fill: parent
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
@@ -284,6 +289,7 @@ Rectangle {
         border.width: 1
         anchors.left: label3.right
         TextInput {
+            id:identityInput
             anchors.fill: parent
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
@@ -311,6 +317,10 @@ Rectangle {
         font.pixelSize: 16
         width:100
         height:25
+
+        onClicked: {
+            confirmInfo();
+        }
     }
 
     FancyButton {
@@ -338,11 +348,39 @@ Rectangle {
         }
     }
 
+    function confirmInfo(){
+          if(nameInput.text==="")
+          {
+              MainWindow.showMassageBox("姓名不能为空")
+              return
+          }
+          if(ageInput.text==="")
+          {
+              MainWindow.showMassageBox("年龄不能为空")
+              return
+          }
+          if(identityInput.text===""||identityInput.length!==18)
+          {
+              MainWindow.showMassageBox("身份证号错误")
+              return
+          }
+          if(commucateInput.text==="")
+          {
+              MainWindow.showMassageBox("手机号不能为空")
+              return;
+          }
 
+           var hasHpv=control1.checked?"有":"无"
+           var hasCancer=control2.checked?"有":"无"
+           var sex=comboBox.currentText
+
+           addPatientSignal(nameInput.text,ageInput.text,
+                            Qt.formatDateTime(new Date(),"hh.mm"),
+                            identityInput.text,commucateInput.text,hasCancer,hasHpv,sex)
+
+          returnSignal()
+
+    }
 }
 
-/*##^##
-Designer {
-    D{i:0}D{i:1;locked:true}
-}
-##^##*/
+

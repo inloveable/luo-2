@@ -19,6 +19,8 @@ public:
     Q_INVOKABLE void login(QString account,QString password);
     void onLoginResult(bool result,QString message);
 
+    Q_INVOKABLE QString getCurrentDoctorName();
+
     Q_INVOKABLE int tryRegister(QString account,QString password,QString doctorName);
     Q_INVOKABLE int intoTCTAnalize();
     Q_INVOKABLE void setCurrentPatient(QString name,QString age,QString sex,
@@ -35,6 +37,8 @@ public:
                                     QString hasCance,
                                     QString hasHPV);
 
+    Q_INVOKABLE void showMassageBox(QString message);
+
 signals:
     void loginResult(bool result,QString message);
     void tryLogin(QString account,QString password);
@@ -42,6 +46,7 @@ signals:
     int askRegister(const QString& account,const QString& password
                     ,const QString& docId,const QString& picturePath);
 
+    //reactivates LoginWindow
     void showMainArea();
 private:
 

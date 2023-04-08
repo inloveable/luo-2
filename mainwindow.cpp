@@ -176,6 +176,21 @@ void QmlCommunicator::addPatient(QString name,QString age,QString sex,
 
 }
 
+QString QmlCommunicator::getCurrentDoctorName()
+{
+    auto& userInfo=DataManager::GetInstance()->getCurretnUser();
+    if(userInfo!=nullptr)
+    {
+        return userInfo->doctorName;
+    }
+    return "";
+}
+
+void QmlCommunicator::showMassageBox(QString message)
+{
+    QMessageBox::information(mainwindow,"提示",message);
+}
+
 
 
 

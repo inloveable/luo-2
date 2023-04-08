@@ -18,6 +18,7 @@ Rectangle {
          addPatient.returnSignal.connect(function(){
               switchToPatientInfo()
          })
+        addPatient.addPatientSignal.connect(patientModel.addListElement)
         pageIndex=1;
     }
     function switchToPatientInfo()
@@ -152,17 +153,31 @@ Rectangle {
         }
     }
 
+    Connections{
+
+    }
+
     ListModel{
         id:patientModel
 
 
         function addListElement(p_name,p_age,p_time,p_identity,p_phone,p_hasCancer,p_hasHPV,p_Sex){
-
+              patientModel.append({
+                                     name:p_name,
+                                     age:p_age,
+                                     time:p_time,
+                                     identity:p_identity,
+                                     phone:p_phone,
+                                     hasCancerHistory:p_hasCancer,
+                                     hasHPV:p_hasHPV,
+                                     sex:p_Sex,
+                                 }
+                                 )
         }
 
         ListElement{
             name:"王思思"
-            age:42
+            age:"42"
             time:"12.07"
             identity:"110108199609100113"
             phone:"13761066306"
@@ -172,7 +187,7 @@ Rectangle {
         }
         ListElement{
             name:"王思思1"
-            age:42
+            age:"42"
             time:"12.07"
             identity:"110108199609100113"
             phone:"13761066306"
@@ -182,7 +197,7 @@ Rectangle {
         }
         ListElement{
             name:"王思思2"
-            age:42
+            age:"42"
             time:"12.07"
             identity:"110108199609100113"
             phone:"13761066306"

@@ -6,16 +6,39 @@ Rectangle
 {
      id:selectionwindow;
      color: "antiquewhite"
+
+     property string currentDoctorName
+
+     Rectangle{
+
+         width:200
+         height:25
+         id:doctorWelcomeText
+         color:"transparent"
+         anchors.right:returnButton.left
+         anchors.top: parent.top
+         anchors.topMargin: 20
+         anchors.rightMargin: 20
+         Text{
+
+             anchors.fill: parent
+             font.bold: true
+             font.pixelSize: 16
+             color:"black"
+             text:"你好! "+currentDoctorName+" 医生";
+         }
+     }
+
      FancyButton{
          id:returnButton
-         anchors.top:parent.top
-         anchors.topMargin: 10
+         anchors.top:doctorWelcomeText.top
+
          anchors.right: parent.right
          anchors.rightMargin: 10
          text:"返回"
          font.pixelSize: 12
          width:100
-         height:20
+         height:25
          color:"#1268D7"
          hoverColor:"#1268D766"
          onClicked: {

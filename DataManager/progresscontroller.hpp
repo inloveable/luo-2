@@ -5,6 +5,8 @@
 
 #include <QObject>
 
+//All ProgressBar under same operation should be mannered under this Class(Object)
+//In this case,analize operation
 class QProgressBar;
 class ProgressController : public QObject
 {
