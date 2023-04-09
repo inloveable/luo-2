@@ -26,6 +26,8 @@ void DataManager::init()
 
     initializeDatabase();
     readAllUserInfoFromDatabase();
+    readAllPatientInfoFromDatabase();
+
     const QString currentBin=QApplication::applicationDirPath();
     directories.insert(DirectoryPath::LOG,QString{currentBin+"/log"});
     directories.insert(DirectoryPath::POST_TIFF,QString{currentBin+"/appCache/postPyramidBuffer"});
@@ -51,6 +53,7 @@ void DataManager::Destory()
 void DataManager::saveConfigurationWhenExit()
 {
     this->writeAllUserInfoToDatabase();
+    this->writeAllPatientInfoToDatabase();
 }
 void DataManager::initializeDatabase()
 {
@@ -217,6 +220,20 @@ bool DataManager::setCurrentUser(const QString& account,const QString& docId)
     return false;
 }
 
+bool DataManager::setCurrentPatient(const QString& id)
+{
+    for(auto&& i:patients)
+    {
+        if(i.m_patientId==id)
+        {
+                currentPatient=std::make_unique<PatientInfo>(i);
+                return true;
+
+        }
+    }
+    return false;
+}
+
 void DataManager::adoptProgressBar(QProgressBar* bar)
 {
     if(controller==nullptr)
@@ -225,3 +242,103 @@ void DataManager::adoptProgressBar(QProgressBar* bar)
     }
     controller->adoptProgressBar(bar);
 }
+
+bool DataManager::addPatient(PatientInfo& info)
+{
+    for(auto&& i:this->patients)
+    {
+        if(i.m_patientId==info.m_patientId)
+        {
+            LOG(INFO)<<"adding duplicate patient,returnning";
+            return false;
+        }
+    }
+
+    info.extra=true;
+
+    patients.emplace_back(std::move(info));
+    return true;
+}
+
+void DataManager::readAllPatientInfoFromDatabase()
+{
+    QSqlDatabase db=QSqlDatabase::database("masterbase.db");
+    if(!db.open())
+    {
+        LOG(INFO)<<"database open error when first read";
+        return;
+    }
+
+    QSqlQuery query(db);
+    QString statement = QString("SELECT * FROM PatientInfo");
+    query.exec(statement);
+
+
+    PatientInfo info;
+
+    auto record=query.record();
+    int indexOfUserName=record.indexOf("id");
+    int indexOfPassword=record.indexOf("name");
+    int indexOfDoctorName=record.indexOf("age");
+    int indexOfSignature=record.indexOf("sex");
+    int indexOfPhone=record.indexOf("phone");
+    int indexOfHasCancer=record.indexOf("state1");
+    int indexOfHasHpv=record.indexOf("state2");
+    int indexOfCheckDate=record.indexOf("checkDate");
+    while(query.next())
+    {
+
+        info.m_patientId=query.value(indexOfUserName).toString();
+        info.m_patientName=query.value(indexOfPassword).toString();
+        info.m_patientAge=query.value(indexOfDoctorName).toString();
+        info.m_patientSex=query.value(indexOfSignature).toString();
+        info.m_patientPhone=query.value(indexOfPhone).toString();
+        info.m_patientState1=query.value(indexOfHasCancer).toString();
+        info.m_patientState2=query.value(indexOfHasHpv).toString();
+        info.loginDate=query.value(indexOfCheckDate).toString();
+        info.extra=false;
+        patients.push_back(info);
+    }
+
+    LOG(INFO)<<"INITIAL Patient count: "<<users.size();
+}
+
+void DataManager::writeAllPatientInfoToDatabase()
+{
+    auto db=QSqlDatabase::database("masterbase.db");
+    db.open();
+    for(auto&& i:patients)
+    {
+        if(i.extra==true)
+        {
+            LOG(INFO)<<"WRITING NEW patient:"<<i.m_patientName.toStdString();
+
+            if(db.lastError().isValid())
+            {
+                LOG(INFO)<<"database error: "<<db.lastError().text().toStdString();
+            }
+            QSqlQuery query(db);
+            QString statement = QString("insert into PatientInfo "
+                                        "values('%1' ,'%2' ,'%3' ,'%4','%5','%6',"
+                                        "'%7','%8')")
+                                    .arg(i.m_patientId).arg(i.m_patientName)
+                                    .arg(i.m_patientAge).arg(i.m_patientSex)
+                                    .arg(i.m_patientPhone).arg(i.m_patientState1)
+                                    .arg(i.m_patientState2).arg(i.loginDate);
+            query.exec(statement);
+
+        }
+    }
+    db.close();
+}
+
+
+
+
+
+
+
+
+
+
+

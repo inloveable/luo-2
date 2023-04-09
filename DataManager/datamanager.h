@@ -19,7 +19,8 @@ public:
     explicit DataManager(QObject *parent = nullptr);
     ~DataManager();
 
-    void init();//for some qt dependent operations;
+    void init();//INIT_FUNC
+    //for some qt dependent operations;
 
     enum class DirectoryPath{LOG,
                              POST_TIFF,
@@ -31,23 +32,34 @@ public:
     const QString& getDirectoryPath(DirectoryPath mark){return directories[mark];};
 
 
-    static int checkIfUserInDataBase(const QString& account,const QString& password);
-    int writeAccountInfoToDatabase(const QString& account,const QString& password
-                                          ,const QString& docId,const QString& picturePath);
-
+    //user(Doctor related operations)
+    static int                  checkIfUserInDataBase(const QString& account,const QString& password);
+    int                         writeAccountInfoToDatabase(
+                                        const QString& account,const QString& password
+                                       ,const QString& docId,const QString& picturePath);
     std::unique_ptr<UserInfo>&  getCurretnUser(){return currentUser;};
+    bool                        setCurrentUser(const QString& account,const QString& docId);
+
+
+    std::unique_ptr<PatientInfo>&  getCurretnPatient(){return currentPatient;};
+    bool                        setCurrentPatient(const QString& identity);
+
+    const auto& getPatients(){return patients;};
+
+
+   //let all ui progressbars come here
+   void adoptProgressBar(QProgressBar* bar);
+
+   //patient relative operations
+    bool addPatient(PatientInfo& info);
+    bool addCheckInfo(CheckInfo&,QString patientIdentity);
     std::unique_ptr<PatientInfo>& getPatientInfo(){return currentPatient;};
-
-
-    void adoptProgressBar(QProgressBar* bar);
-
 public slots:
-    bool setCurrentUser(const QString& account,const QString& docId);
-signals:
+
 
  private:
 
-    void initializeDatabase();
+    void initializeDatabase();//INIT_FUNC
     void saveConfigurationWhenExit();
 
 
@@ -56,8 +68,14 @@ signals:
     std::unique_ptr<UserInfo> currentUser=nullptr;
     std::unique_ptr<PatientInfo> currentPatient=nullptr;
 
-    void readAllUserInfoFromDatabase();
+    void readAllUserInfoFromDatabase();//INIT_FUNC
     void writeAllUserInfoToDatabase();
+
+    void readAllPatientInfoFromDatabase();//INIT_FUNC
+    void writeAllPatientInfoToDatabase();
+
+    void readAllCheckInfoFromDatabase();//INIT_FUNC
+    void writeAllCheckInfoFromDatabase();
 
     std::vector<UserInfo> users;
     std::vector<PatientInfo> patients;

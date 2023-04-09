@@ -6,11 +6,11 @@
 #include"networkmanager.hpp"
 #include"datamanager.h"
 #include "qfilesystemwatcher.h"
+#include "qmlcommunicator.hpp"
 #include "qnamespace.h"
 #include "qqml.h"
-#include "qqmlapplicationengine.h"
 #include <QThread>
-#include<QFileDialog>
+#include<QButtonGroup>
 #include<QMessageBox>
 #include <exception>
 
@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
         engine=new QQmlApplicationEngine(QUrl{"qrc:/qml/LoginWindow.qml"});
     }
     catch(std::exception& ex){
-        //some trival kernel exception comes up only in debuggers
+        //some trival kernel exception comes up
         LOG(INFO)<<"QML trigged kernal exceptionL"<<ex.what();
     }
 
@@ -77,52 +77,6 @@ void MainWindow::connectNetworkSignals()
     connect(communicator,&QmlCommunicator::tryLogin,network,&NetworkManager::login);
 }
 
-void QmlCommunicator::onLoginResult(bool result,QString message)
-{
-    if(result==true)
-    {
-
-    }
-    emit loginResult(result,message);
-
-}
-
-void QmlCommunicator::login(QString account,QString password)
-{
-    if(account==""||password=="")
-    {
-        emit loginResult(false,"账号或密码为空");
-        return;
-    }
-    emit tryLogin(account,password);
-}
-
-int QmlCommunicator::tryRegister(QString account,QString password,QString doctorId)
-{
-    QMessageBox::information(mainwindow,"提示","医生您好，注册账号请提供个人手写签名照片!");
-    auto path=QFileDialog::getOpenFileName(mainwindow,"选择签名照片");
-    if(path=="")
-    {
-        return -1;
-    }
-
-    int ret=DataManager::GetInstance()->writeAccountInfoToDatabase(account,password,doctorId,path);
-    if(ret==-2)
-    {
-        QMessageBox::warning(mainwindow,"警告","账号已存在");
-    }
-    if(ret==-3)
-    {
-        QMessageBox::warning(mainwindow,"警告","该医生姓名已注册");
-    }
-    return ret;
-}
-
-int QmlCommunicator::intoTCTAnalize(){
-    mainwindow->reEnter();
-    mainwindow->show();
-    return 0;
-}
 
 void MainWindow::initUi()
 {
@@ -137,6 +91,26 @@ void MainWindow::initUi()
 
     DataManager::GetInstance()->adoptProgressBar(ui.progressBar);
 
+    ui.radioButton->setAutoExclusive(false);
+    ui.radioButton_2->setAutoExclusive(false);
+    ui.radioButton_3->setAutoExclusive(false);
+    ui.radioButton_4->setAutoExclusive(false);
+
+    ui.radioButton->installEventFilter(this);
+    ui.radioButton_2->installEventFilter(this);
+    ui.radioButton_3->installEventFilter(this);
+    ui.radioButton_4->installEventFilter(this);
+
+
+    auto group1=QButtonGroup(this);
+    group1.addButton(ui.radioButton);
+    group1.addButton(ui.radioButton_2);
+
+    auto group2=QButtonGroup(this);
+    group2.addButton(ui.radioButton_3);
+    group2.addButton(ui.radioButton_4);
+
+
 }
 
 void MainWindow::reEnter()
@@ -145,51 +119,56 @@ void MainWindow::reEnter()
    //refresh ui with newly changed data,or may flush for nex Analize
 
     LOG(WARNING)<<"reentering";
-}
-
-void QmlCommunicator::setCurrentPatient(QString name,QString age,QString sex,
-                                     QString checkTime,
-                                     QString identity
-                                     ,QString phoneNum,
-                                     QString hasCance,
-                                     QString hasHPV)
-{
-
-}
-
-void QmlCommunicator::addPatient(QString name,QString age,QString sex,
-                                        QString checkTime,
-                                        QString identity
-                                        ,QString phoneNum,
-                                        QString hasCance,
-                                        QString hasHPV)
-{
-    PatientInfo patient;
-    patient.m_patientName=name;
-    patient.m_patientAge=age;
-    patient.m_patientId=identity;
-    patient.m_patientPhone=phoneNum;
-    patient.m_patientSex=sex;
-    patient.m_patientState1=hasCance;
-    patient.m_patientState2=hasHPV;
-    patient.loginDate=checkTime;
-
-}
-
-QString QmlCommunicator::getCurrentDoctorName()
-{
-    auto& userInfo=DataManager::GetInstance()->getCurretnUser();
-    if(userInfo!=nullptr)
+    const auto& currentPatient=DataManager::GetInstance()->getCurretnPatient();
+    if(currentPatient==nullptr)
     {
-        return userInfo->doctorName;
+        return;
     }
-    return "";
+    LOG(INFO)<<"current Patient not null,populating...";
+    ui.label_3->setText(currentPatient->m_patientName);
+    ui.label_5->setText(currentPatient->m_patientAge);
+    ui.label_7->setText(currentPatient->m_patientSex);
+    ui.label_10->setText(currentPatient->m_patientPhone);
+    ui.label_12->setText(currentPatient->m_patientId);
+
+    if(currentPatient->m_patientState1=="有")
+    {
+        ui.radioButton->setChecked(true);
+
+    }
+    else if(currentPatient->m_patientState1=="无")
+    {
+
+        ui.radioButton_2->setChecked(true);
+    }
+
+    if(currentPatient->m_patientState2=="有")
+    {
+        ui.radioButton_3->setChecked(true);
+
+    }
+    else if(currentPatient->m_patientState2=="无")
+    {
+        ui.radioButton_4->setChecked(true);
+    }
+}
+//make radio button ininteractive
+bool MainWindow::eventFilter(QObject* obj,QEvent* event)
+{
+    if(obj==ui.radioButton||obj==ui.radioButton_2
+        ||obj==ui.radioButton_3||ui.radioButton_4)
+    {
+        if(event->type()==QEvent::MouseButtonPress
+            ||event->type()==QEvent::MouseButtonDblClick
+            ||event->type()==QEvent::MouseButtonRelease)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
-void QmlCommunicator::showMassageBox(QString message)
-{
-    QMessageBox::information(mainwindow,"提示",message);
-}
+
 
 
 

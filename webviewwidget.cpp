@@ -14,7 +14,7 @@ WebViewWidget::WebViewWidget(QWidget *parent)
     : QWidget{parent}
 {
     QGridLayout* layout=new QGridLayout;
-    webView=new QWebEngineView;
+    webView=new QWebEngineView(this);
     layout->addWidget(webView);
 
     this->setLayout(layout);
@@ -24,7 +24,7 @@ WebViewWidget::WebViewWidget(QWidget *parent)
 
 WebViewWidget::~WebViewWidget()
 {
-
+    webView->deleteLater();
 }
 
 void WebViewWidget::setUrl(const QUrl& url)

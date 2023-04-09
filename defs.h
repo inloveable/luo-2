@@ -3,6 +3,7 @@
 
 #include "qurl.h"
 #include<QString>
+#include <vector>
 //类中添加声明
 #define SINGLETON_DECLARE(Class) \
 public:\
@@ -59,6 +60,10 @@ struct PatientInfo
         m_patientState1(""),
         m_patientState2(""),
         loginDate(""){}
+    void addCheckInfo(const CheckInfo& info){
+        checkInfos.push_back(info);
+    }
+
     QString m_patientName;
     QString m_patientAge;
     QString m_patientSex;
@@ -67,6 +72,7 @@ struct PatientInfo
     QString m_patientState1;
     QString m_patientState2;  
     QString loginDate;
+    std::vector<CheckInfo> checkInfos;
 
     bool extra=false;
 };

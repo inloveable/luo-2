@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.0
+import myCpp 1.0
 Rectangle {
     border.width: 1
     border.color:"gray"
@@ -11,6 +12,35 @@ Rectangle {
     anchors.top: infoText.bottom
 
     //病人和检查信息应当是两个不同的概念，同一个病人可以有多个检查信息
+
+    function sendCurrentPatient(){
+        var cI=listView.currentIndex
+        if(cI===-1)
+        {
+            return false;
+        }
+
+        MainWindow.setCurrentPatient(patientModel.get(cI).identity)
+        return true;
+    }
+
+    Connections{
+        /*
+        emit sendPatient(p.m_patientName,p.m_patientAge,
+                         p.m_patientSex,p.loginDate,
+                         p.m_patientId,p.m_patientPhone,
+                         p.m_patientState1,p.m_patientState2);
+          */
+        target:MainWindow
+        function onSendPatient(p_name,p_age,p_Sex,p_time,p_identity,p_phone,p_hasCancer,p_hasHPV,){
+            patientModel.addListElement(p_name,p_age,p_time,p_identity
+                                        ,p_phone,p_hasCancer,p_hasHPV,p_Sex)
+        }
+    }
+
+    Component.onCompleted: {
+        MainWindow.populatePatients()
+    }
 
     property int pageIndex: 0
     function switchToAddPatient(){
@@ -40,6 +70,12 @@ Rectangle {
                 focus:true
                 id:listView
                 anchors.fill: parent
+
+                function getHightListData(){
+
+                }
+
+                /* inusable
                 ScrollBar.horizontal: ScrollBar{
                     background: Rectangle{
                         anchors.fill: parent
@@ -62,6 +98,7 @@ Rectangle {
                     anchors.top: listView.top
                     anchors.left: listView.right
                 }
+                */
 
                 headerPositioning:ListView.OverlayHeader
                 header:Row {
@@ -157,7 +194,8 @@ Rectangle {
 
     }
 
-    ListModel{
+    ListModel
+    {
         id:patientModel
 
 
@@ -173,41 +211,7 @@ Rectangle {
                                      sex:p_Sex,
                                  }
                                  )
-        }
-
-        ListElement{
-            name:"王思思"
-            age:"42"
-            time:"12.07"
-            identity:"110108199609100113"
-            phone:"13761066306"
-            hasCancerHistory:"无"
-            hasHPV:"无"
-            sex:"女"
-        }
-        ListElement{
-            name:"王思思1"
-            age:"42"
-            time:"12.07"
-            identity:"110108199609100113"
-            phone:"13761066306"
-            hasCancerHistory:"无"
-            hasHPV:"无"
-            sex:"女"
-        }
-        ListElement{
-            name:"王思思2"
-            age:"42"
-            time:"12.07"
-            identity:"110108199609100113"
-            phone:"13761066306"
-            hasCancerHistory:"无"
-            hasHPV:"无"
-            sex:"女"
-        }
-
-
-
+        }       
     }
 }
 

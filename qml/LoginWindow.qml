@@ -150,6 +150,8 @@ ApplicationWindow{
                         anchors.top:parent.top
                         anchors.topMargin: 4
                         verticalAlignment: Text.AlignVCenter
+                        font.bold: true
+                        font.pixelSize: 16
                     }
 
                     Rectangle{
@@ -242,6 +244,8 @@ ApplicationWindow{
                         {
 
                         }
+                        font.bold: true
+                        font.pixelSize: 16
                     }
 
                     radius:4

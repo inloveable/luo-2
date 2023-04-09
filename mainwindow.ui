@@ -1098,7 +1098,7 @@ QStatusBar
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <layout class="QVBoxLayout" name="verticalLayout_8" stretch="8,1">
          <item>
           <widget class="WebViewWidget" name="widget_2" native="true"/>
@@ -1183,7 +1183,7 @@ QStatusBar
         </layout>
        </widget>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_7">
         <item>
          <widget class="QGroupBox" name="groupBox">
@@ -1392,8 +1392,8 @@ QStatusBar
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>327</width>
-                     <height>102</height>
+                     <width>387</width>
+                     <height>98</height>
                     </rect>
                    </property>
                    <layout class="QGridLayout" name="gridLayout_2">
@@ -1416,7 +1416,7 @@ QStatusBar
                         <item>
                          <widget class="QRadioButton" name="radioButton">
                           <property name="enabled">
-                           <bool>false</bool>
+                           <bool>true</bool>
                           </property>
                           <property name="text">
                            <string>有</string>
@@ -1429,7 +1429,7 @@ QStatusBar
                         <item>
                          <widget class="QRadioButton" name="radioButton_2">
                           <property name="enabled">
-                           <bool>false</bool>
+                           <bool>true</bool>
                           </property>
                           <property name="text">
                            <string>无</string>
@@ -1455,7 +1455,7 @@ QStatusBar
                         <item>
                          <widget class="QRadioButton" name="radioButton_3">
                           <property name="enabled">
-                           <bool>false</bool>
+                           <bool>true</bool>
                           </property>
                           <property name="text">
                            <string>有</string>
@@ -1465,7 +1465,7 @@ QStatusBar
                         <item>
                          <widget class="QRadioButton" name="radioButton_4">
                           <property name="enabled">
-                           <bool>false</bool>
+                           <bool>true</bool>
                           </property>
                           <property name="text">
                            <string>无</string>
@@ -1493,8 +1493,8 @@ QStatusBar
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>330</width>
-                  <height>190</height>
+                  <width>390</width>
+                  <height>184</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_3">
@@ -1560,7 +1560,7 @@ QStatusBar
      <x>0</x>
      <y>0</y>
      <width>867</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">

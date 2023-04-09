@@ -7,9 +7,11 @@
 #include <QGuiApplication>
 #include<QDir>
 
+#include <cstddef>
 #include<glog/logging.h>
 #include"datamanager.h"
-
+#include<iostream>
+void SinalHandle(const char*,std::size_t len);
 void createDirectories(QApplication& a);
 int main(int argc, char *argv[])
 {
@@ -18,22 +20,23 @@ int main(int argc, char *argv[])
 
     auto& Data=*DataManager::GetInstance();
 
-
+    Data.init();//have to init after QApplication created;
+    createDirectories(a);
     google::InitGoogleLogging(argv[0]);
+
     google::EnableLogCleaner(3);
     google::SetLogFilenameExtension(".txt");
-    createDirectories(a);
+
 
     FLAGS_alsologtostderr = 1;
+    FLAGS_minloglevel = google::GLOG_INFO;
     FLAGS_log_dir = Data.getDirectoryPath(DataManager::DirectoryPath::LOG).toStdString();
     FLAGS_colorlogtostderr = true;//是否启用不同颜色显示(如果终端支持)
+    google::InstallFailureSignalHandler();
+    google::InstallFailureWriter(&SinalHandle);
 
-    Data.init();//have to init after QApplication created;
+
     vips_init(argv[0]);
-
-    LOG(INFO)<<"current log dir:"<<Data.getDirectoryPath(DataManager::DirectoryPath::LOG).toStdString();
-
-
     MainWindow w;
     QObject::connect(&a,&QApplication::aboutToQuit,[&](){
         Data.Destory();
@@ -51,7 +54,12 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-
+void SinalHandle(const char* message,std::size_t len)
+{
+    std::cerr<<"glog error:";
+    std::cerr.write(message,len);
+    std::cerr<<"\n";
+}
 void createDirectories(QApplication& a)
 {
 

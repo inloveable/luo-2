@@ -47,6 +47,7 @@ set(PROJECT_SOURCES
         networkmanager.hpp networkmanager.cpp
         inputcheckinfowidget.hpp inputcheckinfowidget.cpp inputcheckinfowidget.ui
         webviewwidget.hpp webviewwidget.cpp
+        qmlcommunicator.hpp qmlcommunicator.cpp
         defs.h
 
 

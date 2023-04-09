@@ -71,6 +71,7 @@ Thumbs.db
 /.qmake.stash
 
 /vips-dev-8.14
+/build
 
 # qtcreator generated files
 

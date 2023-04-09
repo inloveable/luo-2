@@ -8,6 +8,7 @@ Rectangle {
     height:600
 
     signal returnSignal();
+    //Debug notice:the order of parameters here is wrong
     signal addPatientSignal(string p_name,string p_age,string p_time,
                       string p_identity,
                       string p_phone,string p_hasCancer,string p_hasHPV,string p_Sex)
@@ -323,6 +324,26 @@ Rectangle {
         }
     }
 
+    Connections{
+        target: MainWindow
+
+        function onAddPatientResult(result,message)
+        {
+            MainWindow.showMassageBox(message);
+            if(result===true)
+            {
+                var hasHpv=control1.checked?"有":"无"
+                var hasCancer=control2.checked?"有":"无"
+                var sex=comboBox.currentText
+                addPatientSignal(nameInput.text,ageInput.text,
+                                 Qt.formatDateTime(new Date(),"hh.mm"),
+                                 identityInput.text,commucateInput.text,hasCancer,hasHpv,sex)
+                returnSignal()
+            }
+        }
+
+    }
+
     FancyButton {
         id: returnButton
         x: 502
@@ -374,11 +395,20 @@ Rectangle {
            var hasCancer=control2.checked?"有":"无"
            var sex=comboBox.currentText
 
-           addPatientSignal(nameInput.text,ageInput.text,
-                            Qt.formatDateTime(new Date(),"hh.mm"),
-                            identityInput.text,commucateInput.text,hasCancer,hasHpv,sex)
+          /*
+void QmlCommunicator::addPatient(QString name,QString age,QString sex,
+                                        QString checkTime,
+                                        QString identity
+                                        ,QString phoneNum,
+                                        QString hasCance,
+                                        QString hasHPV)
+*/
 
-          returnSignal()
+
+           MainWindow.addPatient(nameInput.text,ageInput.text
+                                 ,sex,Qt.formatDateTime(new Date(),"hh.mm")
+                                 ,identityInput.text,commucateInput.text,
+                                 hasCancer,hasHpv)
 
     }
 }

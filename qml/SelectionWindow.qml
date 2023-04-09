@@ -151,6 +151,11 @@ Rectangle
          }
 
          onClicked: {
+
+             var result=patientInfo.sendCurrentPatient();
+             if(result===false)
+                 return;
+
              loginWindow.hide();
              MainWindow.intoTCTAnalize();
          }
@@ -209,6 +214,10 @@ Rectangle
 
      }
 
+     AboutWidget{
+         id:aboutwidget
+     }
+
      Button {
          id: button3
 
@@ -244,6 +253,10 @@ Rectangle
                     GradientStop { position: 0.911; color: "#096fe0" }
                     orientation: Gradient.Horizontal
                 }
+         }
+
+         onClicked: {
+             aboutwidget.show()
          }
 
      }
