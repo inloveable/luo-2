@@ -50,6 +50,7 @@ struct CheckInfo{
     QString checkDate;
     QString illAbstract;
     QString CheckResult;
+    bool extra=false;
 };
 
 struct PatientInfo

@@ -20,13 +20,24 @@ DataManager::DataManager(QObject *parent)
 {
 
 }
+/*
+             libvips cutting
+//打开分析图片----------------->图片筛选(将空白图片移到output)---------
 
+---->预处理(将空白图片与待分析图片分流,空白图片直接到/appCache/postPyramidBuffer(按照金字塔格式)
+，待分析图片到/appCache/pyramidBuffer/input)
+-------------------->MedicalDetector()---->将ouput中的分析后图片再放到金字塔文件夹下---->提示分析完成
+-------------------->生成新html---->显示在结果webview
+自动地将最底层的图片result.tiff---------->客户点击保存就让他等待
+
+*/
 void DataManager::init()
 {
 
     initializeDatabase();
     readAllUserInfoFromDatabase();
     readAllPatientInfoFromDatabase();
+    readAllCheckInfoFromDatabase();
 
     const QString currentBin=QApplication::applicationDirPath();
     directories.insert(DirectoryPath::LOG,QString{currentBin+"/log"});
@@ -52,8 +63,10 @@ void DataManager::Destory()
 }
 void DataManager::saveConfigurationWhenExit()
 {
+    resetCurrent();
     this->writeAllUserInfoToDatabase();
     this->writeAllPatientInfoToDatabase();
+    this->writeAllCheckInfoFromDatabase();
 }
 void DataManager::initializeDatabase()
 {
@@ -81,6 +94,13 @@ void DataManager::initializeDatabase()
             <<"sex"
             <<"phone"<<"state1"<<"state2"<<"checkDate";
     dbManager.createTable("PatientInfo",columns,strType,strType,intType,strType,strType,strType,strType,strType);
+
+
+    columns.clear();
+    columns<<"checkDepartment"<<"checkPosition"<<"checkDate"
+           <<"illAbstract"<<"CheckResult"<<"patientIdentity";
+    dbManager.createTable("CheckInfo",columns,strType,strType,
+                          strType,strType,strType,strType);
     dbManager.printLastError();
 }
 
@@ -205,8 +225,21 @@ void DataManager::makeAnalizeMarkIdentical()
 
 bool DataManager::setCurrentUser(const QString& account,const QString& docId)
 {
+
+    std::unique_ptr<UserInfo> lastUser=nullptr;
+    if(currentUser!=nullptr)
+    {
+        currentUser.swap(lastUser);
+    }
     for(auto&& i:users)
     {
+        if(lastUser!=nullptr)
+        {
+            if(i.account==lastUser->account)
+            {
+                i=*lastUser;//stack object automatically destory
+            }
+        }
         if(i.account==account)
         {
             if(i.doctorName==docId)
@@ -222,8 +255,21 @@ bool DataManager::setCurrentUser(const QString& account,const QString& docId)
 
 bool DataManager::setCurrentPatient(const QString& id)
 {
+    std::unique_ptr<PatientInfo> lastUser=nullptr;
+    if(currentUser!=nullptr)
+    {
+        currentPatient.swap(lastUser);
+    }
     for(auto&& i:patients)
     {
+        if(lastUser!=nullptr)
+        {
+            if(i.m_patientId==lastUser->m_patientId)
+            {
+                i=*lastUser;
+                continue;
+            }
+        }
         if(i.m_patientId==id)
         {
                 currentPatient=std::make_unique<PatientInfo>(i);
@@ -231,6 +277,7 @@ bool DataManager::setCurrentPatient(const QString& id)
 
         }
     }
+    LOG(WARNING)<<"patient id:"<<id.toStdString()<<" not found";
     return false;
 }
 
@@ -331,6 +378,128 @@ void DataManager::writeAllPatientInfoToDatabase()
     }
     db.close();
 }
+
+void DataManager::generateCheckInfo(const QString& illAbstract,const QString& checkStatus)
+{
+    if(currentPatient==nullptr)
+    {
+        LOG(WARNING)<<"tring to generate checkinfo on null currentPatient";
+        return;
+    }
+
+    CheckInfo info;
+    info.extra=true;
+    info.CheckResult=checkStatus;
+    info.checkDate=QDateTime::currentDateTime().toString("yyyy.MM.dd:hh.mm.ss");
+    info.illAbstract=illAbstract;
+    info.checkDepartment=checkDepartment;
+    info.checkPositon=checkPosition;
+    currentPatient->checkInfos.emplace_back(std::move(info));
+    LOG(INFO)<<"Done generating checkInfo";
+
+}
+
+void DataManager::writeAllCheckInfoFromDatabase()
+{
+    auto db=QSqlDatabase::database("masterbase.db");
+    db.open();
+    for(auto&& p:patients)
+    {
+        for(auto&& i:p.checkInfos)
+        {
+            if(i.extra==true)
+            {
+                LOG(INFO)<<"WRITING NEW CheckInfo identity:"<<p.m_patientId.toStdString();
+                QSqlQuery query(db);
+                QString statement = QString("insert into CheckInfo "
+                                            "values('%1' ,'%2' ,'%3' ,'%4','%5','%6'"
+                                            ")")
+                                        .arg(i.checkDepartment).arg(i.checkPositon)
+                                        .arg(i.checkDate).arg(i.illAbstract)
+                                        .arg(i.CheckResult).arg(p.m_patientId);
+
+                query.exec(statement);
+
+            }
+        }
+
+    }
+    db.close();
+}
+
+void DataManager::readAllCheckInfoFromDatabase()
+{
+    QSqlDatabase db=QSqlDatabase::database("masterbase.db");
+    if(!db.open())
+    {
+        LOG(INFO)<<"database open error when first read";
+        return;
+    }
+    for(auto&& p:patients)
+    {
+        QSqlQuery query(db);
+        QString statement = QString("SELECT * FROM CheckInfo "
+                                    "WHERE patientIdentity='%1'").arg(p.m_patientId);
+        query.exec(statement);
+
+
+        CheckInfo info;
+
+        auto record=query.record();
+
+        int indexOfDepartment=record.indexOf("checkDepartment");
+        int indexOfpostion=record.indexOf("checkPosition");
+        int indexOfcheckDate=record.indexOf("checkDate");
+        int indexOfillAbstract=record.indexOf("illAbstract");
+        int indexOfcheckResult=record.indexOf("CheckResult");
+        while(query.next())
+        {
+            info.checkDepartment=query.value(indexOfDepartment).toString();
+            info.checkPositon=query.value(indexOfpostion).toString();
+            info.checkDate=query.value(indexOfcheckDate).toString();
+            info.illAbstract=query.value(indexOfillAbstract).toString();
+            info.CheckResult=query.value(indexOfcheckResult).toString();
+
+
+            info.extra=false;
+            p.checkInfos.push_back(info);
+
+        }
+        LOG(INFO)<<"Patient:"<<p.m_patientName.toStdString()
+                  <<" checkinfo count"<<p.checkInfos.size();
+    }
+
+
+}
+
+//reset resource into buffer when exit
+void DataManager::resetCurrent()
+{
+    if(currentPatient!=nullptr)
+    {
+        for(auto&& p:patients)
+        {
+            if(p.m_patientId==currentPatient->m_patientId)
+            {
+                p=*currentPatient;
+                break;
+            }
+        }
+    }
+    if(currentUser!=nullptr)
+    {
+        for(auto&& u:users)
+        {
+            if(u.account==currentUser->account)
+            {
+                u=*currentUser;
+                break;
+            }
+        }
+    }
+
+}
+
 
 
 

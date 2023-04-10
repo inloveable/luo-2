@@ -11,7 +11,7 @@ include_directories(${VIPSPATH}/lib/glib-2.0/include)
 link_directories(${VIPSPATH}/lib)
 
 
-
+#
 list(APPEND CMAKE_PREFIX_PATH "C:/Program Files (x86)/googletest-distribution" )
 find_package(GTest REQUIRED)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)

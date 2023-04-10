@@ -48,7 +48,10 @@ set(PROJECT_SOURCES
         inputcheckinfowidget.hpp inputcheckinfowidget.cpp inputcheckinfowidget.ui
         webviewwidget.hpp webviewwidget.cpp
         qmlcommunicator.hpp qmlcommunicator.cpp
+
         defs.h
+
+        CoreFunctionality/cutpyramid.hpp CoreFunctionality/cutpyramid.cpp
 
 
 

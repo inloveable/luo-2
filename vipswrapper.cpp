@@ -73,6 +73,6 @@ qint64 Utility::calcuEnd()
 
 QString Utility::hashStringMd5(const QString& hashed)
 {
-     QByteArray hash = QCryptographicHash::hash(hashed.toUtf8(), QCryptographicHash::Md5);
+    QByteArray hash = QCryptographicHash::hash(hashed.toUtf8(), QCryptographicHash::Md5);
     return hash;
 }

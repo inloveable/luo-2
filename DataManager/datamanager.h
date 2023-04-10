@@ -44,7 +44,12 @@ public:
     std::unique_ptr<PatientInfo>&  getCurretnPatient(){return currentPatient;};
     bool                        setCurrentPatient(const QString& identity);
 
+
+    void generateCheckInfo(const QString& illAbstract,const QString& checkStatus);
+
     const auto& getPatients(){return patients;};
+
+
 
 
    //let all ui progressbars come here
@@ -74,6 +79,7 @@ public slots:
     void readAllPatientInfoFromDatabase();//INIT_FUNC
     void writeAllPatientInfoToDatabase();
 
+    //must be called after init patient info
     void readAllCheckInfoFromDatabase();//INIT_FUNC
     void writeAllCheckInfoFromDatabase();
 
@@ -85,6 +91,11 @@ public slots:
     void makeAnalizeMarkIdentical();
 
     ProgressController* controller=nullptr;
+
+    QString checkDepartment="内科";
+    QString checkPosition="";
+
+    void resetCurrent();
 
 
 };
