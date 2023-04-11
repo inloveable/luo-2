@@ -1,7 +1,13 @@
 
 #include "cutpyramid.hpp"
 #include"../vipswrapper.hpp"
-CutPyramid::CutPyramid(QString src,QString dst,int tileSize,int overlap):src{src},dst{dst}
+#include <functional>
+#include <utility>
+#include"glog/logging.h"
+CutPyramid::CutPyramid(QString src,QString dst,int tileSize,int overlap,
+                       std::function<void(int)>&& parent)
+    :Runnables{std::forward<std::function<void(int)>>(parent)},
+    src{src},dst{dst}
     ,tileSize(tileSize),overlap{overlap}
 {
 
@@ -10,15 +16,8 @@ CutPyramid::CutPyramid(QString src,QString dst,int tileSize,int overlap):src{src
 void CutPyramid::run()
 {
     int result=VipsWrapper::dzSave(src,dst,tileSize,overlap);
+    Runnables::takeArgs(result);
 
-    if(result==0)
-    {
-        emit runningFinished(true);
-    }
-    else
-    {
-        emit runningFinished(false);
-    }
-
+    LOG(INFO)<<"run Cutpytamid finished";
 }
 

@@ -4,8 +4,6 @@ import myCpp 1.0
 Rectangle {
     id:addPatientPage
 
-    width:1000
-    height:600
 
     signal returnSignal();
     //Debug notice:the order of parameters here is wrong

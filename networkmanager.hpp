@@ -29,7 +29,7 @@ public:
 自动地将最底层的图片result.tiff---------->客户点击保存就让他等待
 
 */
-
+public:
     enum class ANALIZE_STATUS{WAIT,OPEN,FILITER,ANALIZE,RECOVER_PYRAMID,RECOVER_TIFF,DONE,ERROR};
 
 

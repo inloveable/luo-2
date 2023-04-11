@@ -106,8 +106,7 @@ ApplicationWindow{
                 radius: 4
 
                 anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.topMargin: 60
+                anchors.verticalCenter:parent.verticalCenter
                 anchors.rightMargin: 30
                 activeFocusOnTab: true
                 focus: true

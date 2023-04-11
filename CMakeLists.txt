@@ -22,6 +22,8 @@ endif()
 add_subdirectory(test)
 add_subdirectory(DataManager)
 
+
+
 set(VIPSPATH ./vips-dev-8.14)
 
 list(APPEND ${CMAKE_PREFIX_PATH} ${VIPSPATH})

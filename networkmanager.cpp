@@ -1,6 +1,6 @@
 
 #include "networkmanager.hpp"
-#include"datamanager.h"
+#include"DataManager/datamanager.h"
 #include"CoreFunctionality/cutpyramid.hpp"
 #include<QThreadPool>
 #include<glog/logging.h>
@@ -27,17 +27,20 @@ void NetworkManager::login(QString account,QString password)
 
 void NetworkManager::startOpen(QString file,QString dst)
 {
-    CutPyramid* pyramid=new CutPyramid{file,dst,1024,0};
-    connect(pyramid,&CutPyramid::runningFinished,this,[=](bool sucess){
-        if(sucess){
-            //switch to the status when task is done.
-            this->currentStatus=ANALIZE_STATUS::OPEN;
-        }else {
-            this->currentStatus=ANALIZE_STATUS::ERROR;
-            LOG(WARNING)<<"error when Open image(cut)";
-        }
+    CutPyramid* pyramid=new CutPyramid{file,dst,1024,0,
+          [manager=this](int sucess)
+            {
+                if(sucess>0)
+                {
+                //switch to the correct status when task is done.
+                manager->currentStatus=ANALIZE_STATUS::OPEN;
+                }else {
+                manager->currentStatus=ANALIZE_STATUS::ERROR;
+                LOG(WARNING)<<"error when Open image(cut)";
+                }
 
-    });
+           }};
+
     QThreadPool::globalInstance()->start(pyramid);
 }
 
