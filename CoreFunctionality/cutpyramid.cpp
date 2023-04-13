@@ -1,5 +1,6 @@
 
 #include "cutpyramid.hpp"
+#include"../defs.h"
 #include"../vipswrapper.hpp"
 #include <functional>
 #include <utility>
@@ -15,8 +16,11 @@ CutPyramid::CutPyramid(QString src,QString dst,int tileSize,int overlap,
 
 void CutPyramid::run()
 {
+    PROFILE_BEGIN;
     int result=VipsWrapper::dzSave(src,dst,tileSize,overlap);
     Runnables::takeArgs(result);
+    PROGILE_END;
+    LOG(INFO)<<"dzsave cost:"<<PROFILE_RESULT;
 
     LOG(INFO)<<"run Cutpytamid finished";
 }

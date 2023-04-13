@@ -22,12 +22,19 @@ public:
     //qml slots
 
     void  reEnter();
+    void  onGeneratePreHtml();
+    void  onGeneratePostHtml();
 
 
 protected:
     bool eventFilter(QObject* obj,QEvent*event) override;
 
  signals:
+
+private slots:
+    void on_pushButton_4_clicked();
+
+    void on_pushButton_6_clicked();
 
 private:
     Ui::MainWindow ui;
@@ -40,6 +47,11 @@ private:
     void connectNetworkSignals();
 
     void initUi();
+
+    void uiStartOpen(bool start);
+    void uiStartAnalize(bool start);
+
+    std::vector<QPushButton*> buttons;
 
 
 

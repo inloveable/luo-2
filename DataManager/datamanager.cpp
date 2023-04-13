@@ -18,7 +18,7 @@ SINGLETON_IMPLEMENT(DataManager)
 DataManager::DataManager(QObject *parent)
     : QObject{parent}
 {
-
+        controller=new ProgressController(this);
 }
 /*
              libvips cutting
@@ -37,19 +37,27 @@ void DataManager::init()
     initializeDatabase();
     readAllUserInfoFromDatabase();
     readAllPatientInfoFromDatabase();
+    LOG(INFO)<<"entering read check info";
     readAllCheckInfoFromDatabase();
+    LOG(INFO)<<"leaving read checkInfo";
+
 
     const QString currentBin=QApplication::applicationDirPath();
     directories.insert(DirectoryPath::LOG,QString{currentBin+"/log"});
+    directories.insert(DirectoryPath::PRE_TIFF,QString{currentBin+"/appCache/prePyramidBuffer"});
     directories.insert(DirectoryPath::POST_TIFF,QString{currentBin+"/appCache/postPyramidBuffer"});
     directories.insert(DirectoryPath::PYRAMID_INPUT,QString{currentBin+"/appCache/pyramidBuffer/input"});
     directories.insert(DirectoryPath::PYRAMID_OUTPUT,QString{currentBin+"/appCache/pyramidBuffer/output"});
     directories.insert(DirectoryPath::DEFAULT_DOCUMENTS,QString{currentBin+"/appCache/documents"});
-    directories.insert(DirectoryPath::HTML_PATH,QString{"qrc:/resources/html/preHtml/Newtest.html"});
+
+
+    directories.insert(DirectoryPath::HTML_PATH,QString{currentBin+"/appCache/documents"});
+    directories.insert(DirectoryPath::PRE_HTML_PATH,QString{currentBin+"/preHtml"});
+    directories.insert(DirectoryPath::POST_HTML_PATH,QString{currentBin+"/postHtml"});
     //doubted:js file?
-    directories.insert(DirectoryPath::JavaScript_PATH,QString{"qrc:/resources/html/preHtml/openseadragon.min.js"});
+    //directories.insert(DirectoryPath::JavaScript_PATH,QString{"qrc:/resources/html/preHtml/openseadragon.min.js"});
 
-
+    LOG(INFO)<<"leaving datamanger init";
 }
 
 DataManager::~DataManager()
@@ -220,7 +228,8 @@ int DataManager::writeAccountInfoToDatabase(const QString& account,const QString
 void DataManager::makeAnalizeMarkIdentical()
 {
     auto currentDateTime=QDateTime::currentDateTime().toString("MM.dd.hh.mm.ss");
-    this->identicalHashMarkForAnalize=Utility::hashStringMd5(currentDateTime);
+    //this->identicalHashMarkForAnalize=Utility::hashStringMd5(currentDateTime);
+    this->identicalHashMarkForAnalize=currentDateTime;
 }
 
 bool DataManager::setCurrentUser(const QString& account,const QString& docId)
@@ -283,10 +292,7 @@ bool DataManager::setCurrentPatient(const QString& id)
 
 void DataManager::adoptProgressBar(QProgressBar* bar)
 {
-    if(controller==nullptr)
-    {
-        controller=new ProgressController(this);
-    }
+
     controller->adoptProgressBar(bar);
 }
 

@@ -16,6 +16,10 @@ link_directories(${VIPSPATH}/lib)
 
 #
 list(APPEND CMAKE_PREFIX_PATH "C:/Program Files (x86)/googletest-distribution" )
+list(APPEND CMAKE_PREFIX_PATH ../3rdparty/cuttedOpencv/)
+
+
+find_package(OpenCV REQUIRED)
 find_package(glog REQUIRED)
 find_package(GTest REQUIRED)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Sql)
@@ -27,6 +31,8 @@ set(GTestFiles
     ../vipswrapper.cpp
     ../CoreFunctionality/cutpyramid.hpp
     ../CoreFunctionality/cutpyramid.cpp
+    ../CoreFunctionality/checkbackgroundandmove.hpp
+    ../CoreFunctionality/checkbackgroundandmove.cpp
 
     maintest.hpp maintest.cpp
     testnetworkmanager.hpp testnetworkmanager.cpp
@@ -36,7 +42,8 @@ set(GTestFiles
 add_executable(TestDzSave main.cpp
                ${GTestFiles})
 
-target_link_libraries(TestDzSave PRIVATE Qt${QT_VERSION_MAJOR}::Widgets glog::glog
+target_link_libraries(TestDzSave PRIVATE Qt${QT_VERSION_MAJOR}::Widgets glog::glog ${OpenCV_LIBS}
+
     Qt${QT_VERSION_MAJOR}::Sql
     ${GLIB2_LIBRARIES} ${GTEST_BOTH_LIBRARIES}
     libvips.lib

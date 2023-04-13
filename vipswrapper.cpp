@@ -76,3 +76,41 @@ QString Utility::hashStringMd5(const QString& hashed)
     QByteArray hash = QCryptographicHash::hash(hashed.toUtf8(), QCryptographicHash::Md5);
     return hash;
 }
+
+bool VipsWrapper::isBackground(const QString& picture)
+{
+
+    VipsImage *image = vips_image_new_from_file(picture.toStdString().c_str(), NULL);
+    std::cerr<<"vip error:"<<vips_error_buffer();
+    if (image == NULL) {
+
+    }
+    VipsImage *gray = vips_image_new ();
+    std::cerr<<"vip error:"<<vips_error_buffer();
+    qDebug()<<"color trans:"<< vips_colourspace(image, &gray, VIPS_INTERPRETATION_B_W, NULL);
+    std::cerr<<"vip error:"<<vips_error_buffer();
+
+    double mean=0, stddev=0;
+
+
+
+        qDebug()<<"avg:"<<vips_avg(gray,&mean);
+        std::cerr<<"vip error:"<<vips_error_buffer();
+        qDebug()<<"dev:"<<vips_deviate(gray,&stddev);
+        std::cerr<<"vip error:"<<vips_error_buffer();
+
+    g_object_unref(image);
+
+
+    qDebug()<<"图像标准差："<<stddev<<" 平均值:"<<mean;
+
+
+    g_object_unref(gray);
+    // 判断灰度图像是否是背景图像
+    if (stddev < 10.0 && mean > 200.0) {
+        return true;
+    } else {
+        return false;
+    }
+
+}

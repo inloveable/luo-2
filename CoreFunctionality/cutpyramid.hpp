@@ -29,19 +29,16 @@ public:
     using Function_type=Callback(Args...);
 
     using FunctionTuple=typename function_traits<Callback>::ArgumentTuple;
-
-
-
-    Runnables(Callback&& callbeck):
+    Runnables(Callback&& callbeck):generalFlag(false),
         callback{std::forward<Callback>(callbeck)}{};
 
 
+
+    void setGeneralFlag(){generalFlag=true;};
     void invoke(){
         std::apply(callback,m_args);
     }
-
     virtual ~Runnables(){invoke();};
-
 
     template<typename... realArgs>
     void takeArgs(realArgs&&... args)
@@ -53,6 +50,8 @@ public:
 
 protected:
     int result=0;
+
+    bool generalFlag=false;
 
 private:
     Callback callback;
@@ -67,15 +66,19 @@ class CutPyramid : public Runnables<std::function<void(int)>>
 {
 
 public:
-    CutPyramid(QString src,QString dst,int tileSize,int overlap,std::function<void(int)>&& callback);
+    CutPyramid(QString src,QString dst,
+               int tileSize,int overlap,std::function<void(int)>&& callback);
     void run() override;
 private:
-
-
-
     QString src;
     QString dst;
     int tileSize;
     int overlap;
 };
+
+class MovePictures:public Runnables<std::function<void(int sucess,qint64,qint64)>>
+{
+
+};
+
 

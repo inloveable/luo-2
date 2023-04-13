@@ -9,7 +9,11 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+list(APPEND CMAKE_PREFIX_PATH ./3rdparty/cuttedOpencv/)
+
 find_package(glog REQUIRED)
+find_package(OpenCV REQUIRED)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets  WebEngineWidgets Qml)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets WebEngineWidgets Qml)
 enable_testing()
@@ -24,7 +28,7 @@ add_subdirectory(DataManager)
 
 
 
-set(VIPSPATH ./vips-dev-8.14)
+set(VIPSPATH vips-dev-8.14)
 
 list(APPEND ${CMAKE_PREFIX_PATH} ${VIPSPATH})
 
@@ -32,6 +36,7 @@ include_directories(${VIPSPATH}/include)
 include_directories(${VIPSPATH}/include/glib-2.0)
 include_directories(${VIPSPATH}/lib/glib-2.0/include)
 link_directories(${VIPSPATH}/lib)
+link_directories(./3rdparty/cuttedOpencv/lib)
 
 if(WIN32)
 set(icon_RC medicalDetecter.rc)
@@ -54,6 +59,8 @@ set(PROJECT_SOURCES
         defs.h
 
         CoreFunctionality/cutpyramid.hpp CoreFunctionality/cutpyramid.cpp
+        CoreFunctionality/checkbackgroundandmove.hpp CoreFunctionality/checkbackgroundandmove.cpp
+        CoreFunctionality/medicaldetector.hpp CoreFunctionality/medicaldetector.cpp
 
 
 
@@ -61,10 +68,20 @@ set(PROJECT_SOURCES
 )
 
 #set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/resources/images/logo.ico")
+make_directory(${CMAKE_CURRENT_BINARY_DIR}/preHtml)
+make_directory(${CMAKE_CURRENT_BINARY_DIR}/postHtml)
 
 file(GLOB RUNTIME_DLLS "${CMAKE_CURRENT_SOURCE_DIR}/runtime/*" )
 file(COPY ${RUNTIME_DLLS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
+file(GLOB HTMLS "${CMAKE_CURRENT_SOURCE_DIR}/resources/html/preHtml/*" )
+file(COPY ${HTMLS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/preHtml)
+
+
+
+
+file(GLOB HTMLS1 "${CMAKE_CURRENT_SOURCE_DIR}/resources/html/postHtml/*" )
+file(COPY ${HTMLS1} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/postHtml)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     if(WIN32)
@@ -96,12 +113,15 @@ else()
     endif()
 endif()
 
-foreach(lib ${GLIB2_LIBRARIES})
-    message("glib:${lib}")
+foreach(lib ${OpenCV_LIBS})
+    message("opencv:${lib}")
 endforeach()
 
-target_link_libraries(MedicalDetector PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Qml glog::glog
-    ${GLIB2_LIBRARIES} libvips.lib libgobject-2.0.lib Qt6::WebEngineWidgets LDataManager )
+target_link_libraries(MedicalDetector PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Qml glog::glog
+    ${GLIB2_LIBRARIES} libvips.lib libgobject-2.0.lib Qt6::WebEngineWidgets LDataManager ${OpenCV_LIBS}
+   )
+
 
 set_target_properties(MedicalDetector PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

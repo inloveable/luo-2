@@ -2,17 +2,23 @@
 #pragma once
 
 
+
+
 #include <QObject>
 
 //TODO:Maybe access login info remotely
 //which is why called networkmanager
 //and this should be making total domination of anylizing job
 //DataManager runs in mainThread;
+class CutPyramid;
+class MedicalDetector;
 class NetworkManager : public QObject
 {
     Q_OBJECT
 public:
     explicit NetworkManager(QObject *parent = nullptr);
+
+    ~NetworkManager();
 
     void login(QString account,QString password);
 
@@ -30,26 +36,55 @@ public:
 
 */
 public:
-    enum class ANALIZE_STATUS{WAIT,OPEN,FILITER,ANALIZE,RECOVER_PYRAMID,RECOVER_TIFF,DONE,ERROR};
+    enum class ANALIZE_STATUS{WAIT=0,OPEN=1,FILITER=2,ANALIZE=3,
+                                RECOVER_PYRAMID=4,RECOVER_TIFF=5,DONE=6,ERROR=7};
 
-
+public slots:
     void startOpen(QString file,QString dst);
-    void startAnalize();
+
+    void startAnalize(){
+        aboutStatus=ANALIZE_STATUS::ANALIZE;
+        checkStatus();
+    };
 
 
+    void clearCache();
 
-    void onStartOpenFinished();
 signals:
     void loginResult(bool result,QString message);
 
+    void movingToNextStage(bool reset=false);
+
+    void endStartOpen();
+
+    void letUiGeneratePreHtml();
+
+    void quit();
+
+    void backEndError(QString message);
 
 private:
     //信号更新stage，timer轮询
     ANALIZE_STATUS currentStatus=ANALIZE_STATUS::WAIT;
-    QTimer* tryTimer=nullptr;
+
+    void checkStatus();
 
 
-    bool requestAnalize=false;
+    ANALIZE_STATUS aboutStatus=ANALIZE_STATUS::WAIT;
+
+    void preparing();
+    void analizing();
+    void movingPost();
+
+    QString errormessage;
+    QString preCutBuffer;
+
+    MedicalDetector* analize=nullptr;
+    CutPyramid*      cutPtramid=nullptr;
+
+    void buildDirectoryInPostTiff();
+
+    bool generalFlag=false;
 
 };
 

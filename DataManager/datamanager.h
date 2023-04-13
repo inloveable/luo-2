@@ -23,11 +23,14 @@ public:
     //for some qt dependent operations;
 
     enum class DirectoryPath{LOG,
+                             PRE_TIFF,
                              POST_TIFF,
                              PYRAMID_INPUT,
                              PYRAMID_OUTPUT,
                              DEFAULT_DOCUMENTS,
                              HTML_PATH,
+                             PRE_HTML_PATH,
+                             POST_HTML_PATH,
                              JavaScript_PATH};
     const QString& getDirectoryPath(DirectoryPath mark){return directories[mark];};
 
@@ -48,9 +51,15 @@ public:
     void generateCheckInfo(const QString& illAbstract,const QString& checkStatus);
 
     const auto& getPatients(){return patients;};
+    void makeAnalizeMarkIdentical();
 
 
-
+    void moveToNextStage(bool reset=false){
+        if(reset==false)
+        {
+            controller->moveToNextStage();
+        }
+    };
 
    //let all ui progressbars come here
    void adoptProgressBar(QProgressBar* bar);
@@ -59,6 +68,13 @@ public:
     bool addPatient(PatientInfo& info);
     bool addCheckInfo(CheckInfo&,QString patientIdentity);
     std::unique_ptr<PatientInfo>& getPatientInfo(){return currentPatient;};
+
+
+    void setStages(int s){controller->setProgressStage(s);};
+
+    QString getHashMark()const {return identicalHashMarkForAnalize;};
+    ProgressController* controller=nullptr;
+
 public slots:
 
 
@@ -88,9 +104,9 @@ public slots:
 
     //this string is based on the open time of a test file,and used MD5 cyrpto.
     QString identicalHashMarkForAnalize="";
-    void makeAnalizeMarkIdentical();
 
-    ProgressController* controller=nullptr;
+
+
 
     QString checkDepartment="内科";
     QString checkPosition="";

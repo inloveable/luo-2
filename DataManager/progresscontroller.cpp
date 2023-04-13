@@ -2,6 +2,7 @@
 #include "progresscontroller.hpp"
 #include "qprogressbar.h"
 #include<QTimer>
+#include<glog/logging.h>
 ProgressController::ProgressController(QObject *parent)
     : QObject{parent}
 {
@@ -14,7 +15,7 @@ void ProgressController::start(){
         timer=new QTimer(this);
         timer->setInterval(3000);
         connect(timer,&QTimer::timeout,this,[=](){
-            if(currentVal==100)
+            if(currentVal==100||currentVal==maxVal)
             {
                 timer->stop();
             }
@@ -22,6 +23,7 @@ void ProgressController::start(){
             emit updateProgressBar(currentVal);
         });
     }
+    timer->start();
 }
 
 void ProgressController::adoptProgressBar(QProgressBar* bar)
@@ -31,6 +33,7 @@ void ProgressController::adoptProgressBar(QProgressBar* bar)
 
 bool ProgressController::moveToNextStage()
 {
+    LOG(INFO)<<"MOVING TO NEXT STAGE";
     ++currentStage;
     if(currentStage==stages)
     {
@@ -43,8 +46,9 @@ bool ProgressController::moveToNextStage()
         }
         return false;
     }
-
-    currentVal=(currentStage/stages)*100;
+    timer->start();
+    maxVal=((double)(currentStage+1)/(double)stages)*100;
+    currentVal=((double)currentStage/(double)stages)*100;
     emit updateProgressBar(currentVal);
     return true;
 }

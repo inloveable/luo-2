@@ -62,7 +62,7 @@ void SinalHandle(const char* message,std::size_t len)
 }
 void createDirectories(QApplication& a)
 {
-
+    LOG(INFO)<<"entering create dir";
     auto& Data=*DataManager::GetInstance();
 
     QDir dir;
@@ -75,6 +75,8 @@ void createDirectories(QApplication& a)
     dir.mkdir(Data.getDirectoryPath(DataManager::DirectoryPath::PYRAMID_OUTPUT));
     dir.mkdir(Data.getDirectoryPath(DataManager::DirectoryPath::POST_TIFF));
     dir.mkdir(Data.getDirectoryPath(DataManager::DirectoryPath::DEFAULT_DOCUMENTS));
+    dir.mkdir(Data.getDirectoryPath(DataManager::DirectoryPath::PRE_TIFF));
+    LOG(INFO)<<"LEAing create dir";
 
 
 }

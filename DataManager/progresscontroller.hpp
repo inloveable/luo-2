@@ -18,12 +18,15 @@ public:
     void adoptProgressBar(QProgressBar* bar);
     bool moveToNextStage();
 
+    void setProgressStage(int n){stages=n;};
+    void start();
+
+
 signals:
     void updateProgressBar(int val);
 private:
     QVector<QProgressBar*> progressBars;
 
-    void start();
 
     //阶段:切割，分析,复原，后切割
     int stages=4;
@@ -32,6 +35,7 @@ private:
     QTimer* timer=nullptr;
 
     int currentVal=0;
+    int maxVal=0;
 
 };
 

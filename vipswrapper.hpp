@@ -6,7 +6,7 @@
 #include <chrono>
 #include <ratio>
 
-
+#include<QDirIterator>
 class VipsWrapper : public QObject
 {
     Q_OBJECT
@@ -15,6 +15,10 @@ public:
 
     static int dzSave(QString picture,QString dst,int tilesize=1024,int overlap=0);
     static int saveToTiff(QList<QString> files);
+
+    static bool isBackground(const QString& picture);
+
+
 
 signals:
 

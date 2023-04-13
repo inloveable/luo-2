@@ -87,4 +87,11 @@ struct UserInfo{
     //more to came;
 };
 
+#define PROFILE_BEGIN     auto begin=std::chrono::high_resolution_clock::now()
+#define PROGILE_END       auto end=std::chrono::high_resolution_clock::now()
+#define PROFILE_RESULT    std::chrono::duration_cast\
+<std::chrono::milliseconds>(end-begin).count()
+
+
+
 #endif // DEFS_H
