@@ -15,6 +15,10 @@ public:
 
     void setUrl(const QUrl& url);
 
+    QImage screenShot();
+
+    void setFullScreen(bool val);
+
 signals:
 
 

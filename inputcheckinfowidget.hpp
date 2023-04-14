@@ -12,6 +12,8 @@ public:
     QString getIllAbstract();
     QString getCheckResult();
 
+    void resetInput();
+
 private:
     Ui::InputCheckInfoWidget ui;
 };

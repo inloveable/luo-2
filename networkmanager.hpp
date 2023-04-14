@@ -58,6 +58,7 @@ signals:
     void endStartOpen();
 
     void letUiGeneratePreHtml();
+    void letUiGeneratePostHtml();
 
     void quit();
 

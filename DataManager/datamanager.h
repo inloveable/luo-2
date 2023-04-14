@@ -50,7 +50,7 @@ public:
 
     void generateCheckInfo(const QString& illAbstract,const QString& checkStatus);
 
-    const auto& getPatients(){return patients;};
+    const std::vector<PatientInfo>& getPatients();
     void makeAnalizeMarkIdentical();
 
 
@@ -66,7 +66,7 @@ public:
 
    //patient relative operations
     bool addPatient(PatientInfo& info);
-    bool addCheckInfo(CheckInfo&,QString patientIdentity);
+    bool addCheckInfo(CheckInfo&);
     std::unique_ptr<PatientInfo>& getPatientInfo(){return currentPatient;};
 
 
@@ -74,6 +74,18 @@ public:
 
     QString getHashMark()const {return identicalHashMarkForAnalize;};
     ProgressController* controller=nullptr;
+
+
+    void printReport(const QString& pic,const QString& pic2,
+                     const QString& illAbstract,const QString& checkStatus);
+
+
+    //要修改打印报告，replace here;
+    QString checkDepartment="内科";
+    QString checkPosition="肺部";
+    QString checkTitle="标题";
+    QString checkDevice="001";
+    QString hospital="社区医院";
 
 public slots:
 
@@ -97,7 +109,7 @@ public slots:
 
     //must be called after init patient info
     void readAllCheckInfoFromDatabase();//INIT_FUNC
-    void writeAllCheckInfoFromDatabase();
+    void writeAllCheckInfoToDatabase();
 
     std::vector<UserInfo> users;
     std::vector<PatientInfo> patients;
@@ -108,8 +120,7 @@ public slots:
 
 
 
-    QString checkDepartment="内科";
-    QString checkPosition="";
+
 
     void resetCurrent();
 

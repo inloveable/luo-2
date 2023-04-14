@@ -12,6 +12,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 list(APPEND CMAKE_PREFIX_PATH ./3rdparty/cuttedOpencv/)
 
+
+add_definitions(-DENABLE_MEDICAL_DETECTOR=OFF)
+
+
 find_package(glog REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets  WebEngineWidgets Qml)
@@ -28,7 +32,7 @@ add_subdirectory(DataManager)
 
 
 
-set(VIPSPATH vips-dev-8.14)
+set(VIPSPATH 3rdparty/vips-dev-8.14)
 
 list(APPEND ${CMAKE_PREFIX_PATH} ${VIPSPATH})
 
@@ -53,8 +57,13 @@ set(PROJECT_SOURCES
         resources.qrc
         networkmanager.hpp networkmanager.cpp
         inputcheckinfowidget.hpp inputcheckinfowidget.cpp inputcheckinfowidget.ui
+        modifycheckinfodialog.hpp modifycheckinfodialog.cpp modifycheckinfodialog.ui
         webviewwidget.hpp webviewwidget.cpp
         qmlcommunicator.hpp qmlcommunicator.cpp
+        logwidget.cpp
+        logwidget.hpp
+        logwidget.ui
+        myspliter.hpp myspliter.cpp
 
         defs.h
 

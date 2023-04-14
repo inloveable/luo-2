@@ -14,5 +14,6 @@
         <file>resources/images/flowLogo.png</file>
         <file>resources/config/config.json</file>
         <file>qml/AboutWidget.qml</file>
+        <file>qml/CustomTreeView.qml</file>
     </qresource>
 </RCC>

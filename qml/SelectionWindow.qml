@@ -111,7 +111,13 @@ Rectangle
                     orientation: Gradient.Horizontal
                 }
          }
+
+         onClicked: {
+               MainWindow.showLogWindow();
+         }
      }
+
+
 
      Button {
          id: button1

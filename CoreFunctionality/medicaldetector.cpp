@@ -4,6 +4,16 @@
 #include"datamanager.h"
 #include "qdiriterator.h"
 #include<glog/logging.h>
+#include <utility>
+
+
+#if ENABLE_MEDICAL_DETECTOR
+#include "MedicalForeign.h"
+#include <qmessagebox.h>
+#include "detect_api.h"
+#pragma comment(lib, "MedicalDetector.lib")
+#endif
+
 MedicalDetector::MedicalDetector(std::function<void(int)>&& callback):
     Runnables{std::forward<std::function<void(int)>>(callback)}
 {
@@ -68,6 +78,34 @@ void GeneratePostImage::run()
         file.remove();
     }
 
+}
+
+RealMedicalDetector::RealMedicalDetector(std::function<void(int)>&& callback)
+    :Runnables{std::forward<decltype(callback)>(callback)}
+
+{
+
+}
+
+void RealMedicalDetector::run()
+{
+   /*
+    *
+    *   MedicalForeign* medicalFor = new MedicalForeign();
+    QString yolomodeldir = QString("%1/data/").arg(QApplication::applicationDirPath());
+    QString yolosort = QString("%1/data/coco1.names").arg(QApplication::applicationDirPath());
+    QString srcdir = QString("%1/data/input").arg(QApplication::applicationDirPath());
+    QString outdir = QString("%1/data/output").arg(QApplication::applicationDirPath());
+    int detectpercount = 1;
+    float threshold = 0.5;
+    float nmsthreshold = 0.5;
+    float objthreshold = 0.5;
+    int trygpu = 1;
+    int framerate = 1;
+    int encoder = 5;
+    int modelindex = 0;
+    medicalFor->getParamFromClient(yolomodeldir, yolosort, srcdir, outdir, detectpercount, threshold, nmsthreshold, objthreshold, trygpu, framerate, encoder, modelindex);
+    */
 }
 
 

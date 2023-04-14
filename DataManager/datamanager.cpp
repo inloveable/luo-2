@@ -1,5 +1,6 @@
 ﻿#include "datamanager.h"
 #include"libqsql.h"
+#include "mprinter.h"
 #include "progresscontroller.hpp"
 #include "qapplication.h"
 #include "qdatetime.h"
@@ -36,10 +37,9 @@ void DataManager::init()
 
     initializeDatabase();
     readAllUserInfoFromDatabase();
-    readAllPatientInfoFromDatabase();
-    LOG(INFO)<<"entering read check info";
+    readAllPatientInfoFromDatabase();  
     readAllCheckInfoFromDatabase();
-    LOG(INFO)<<"leaving read checkInfo";
+
 
 
     const QString currentBin=QApplication::applicationDirPath();
@@ -74,7 +74,7 @@ void DataManager::saveConfigurationWhenExit()
     resetCurrent();
     this->writeAllUserInfoToDatabase();
     this->writeAllPatientInfoToDatabase();
-    this->writeAllCheckInfoFromDatabase();
+    this->writeAllCheckInfoToDatabase();
 }
 void DataManager::initializeDatabase()
 {
@@ -265,7 +265,7 @@ bool DataManager::setCurrentUser(const QString& account,const QString& docId)
 bool DataManager::setCurrentPatient(const QString& id)
 {
     std::unique_ptr<PatientInfo> lastUser=nullptr;
-    if(currentUser!=nullptr)
+    if(currentPatient!=nullptr)
     {
         currentPatient.swap(lastUser);
     }
@@ -276,7 +276,6 @@ bool DataManager::setCurrentPatient(const QString& id)
             if(i.m_patientId==lastUser->m_patientId)
             {
                 i=*lastUser;
-                continue;
             }
         }
         if(i.m_patientId==id)
@@ -405,7 +404,7 @@ void DataManager::generateCheckInfo(const QString& illAbstract,const QString& ch
 
 }
 
-void DataManager::writeAllCheckInfoFromDatabase()
+void DataManager::writeAllCheckInfoToDatabase()
 {
     auto db=QSqlDatabase::database("masterbase.db");
     db.open();
@@ -506,6 +505,104 @@ void DataManager::resetCurrent()
 
 }
 
+bool DataManager::addCheckInfo(CheckInfo& info)
+{
+
+    info.extra=true;
+    info.checkDepartment=this->checkDepartment;
+    info.checkDate=QDateTime::currentDateTime().toString("yyyy.MM.dd hh.mm");
+    info.checkPositon=this->checkPosition;
+    this->currentPatient->checkInfos.push_back(info);
+    return true;
+}
+
+
+void DataManager::printReport(const QString& pic1,const QString& pic2,
+                 const QString& illAbstract,const QString& checkStatus)
+{
+    PrintInfo info;
+    info.name=currentPatient->m_patientName;
+    info.gender=currentPatient->m_patientSex;
+    info.age=currentPatient->m_patientAge;
+    info.id=currentPatient->m_patientId;
+    //超声号我忘了,是身份证号吗？
+    info.ultrasonicCode=currentPatient->m_patientId;
+    info.illAbstract=illAbstract;
+    info.CheckResult=checkStatus;
+    //info.checkTip=?;
+    info.pic1=pic1;
+    info.pic2=pic2;
+
+    info.checkDevice=this->checkDevice;
+    info.checkDepartment=this->checkDepartment;
+    info.checkPositon=this->checkPosition;
+    info.checkDate=QDateTime::currentDateTime().toString("yyyy年MM月dd日 hh:mm");
+    info.checkDoc=currentUser->doctorName;
+    //printDate;
+    //printDoc;
+    info.title=this->checkTitle;
+
+    mPrinter printer;
+    const QString path=this->getDirectoryPath(DirectoryPath::DEFAULT_DOCUMENTS)+"/"+
+        info.name+"_"+QDateTime::currentDateTime().toString("yyyy.MM.dd.hh.mm")+".pdf";
+    printer.printCheckPDF(path,info);
+
+    LOG(INFO)<<"print complete";
+
+}
+
+
+/*
+void DataManager::writeAllCheckInfoToDatabase()
+{
+
+    for(auto&& p:patients)
+    {
+        for(auto&& c:p.checkInfos)
+        {
+            if(c.extra==true)
+            {
+                QSqlQuery query(QSqlDatabase::database());
+                // 准备 SQL 语句
+                QString sql = "INSERT INTO CheckInfo (checkDepartment, checkPosition, checkDate, illAbstract, CheckResult, patientIdentity)"
+                              "VALUES (:checkDepartment, :checkPosition, :checkDate, :illAbstract, :CheckResult, :patientIdentity)";
+
+                // 绑定参数
+                query.prepare(sql);
+                query.bindValue(":checkDepartment",c.checkDepartment);
+                query.bindValue(":checkPosition", c.checkPositon);
+                query.bindValue(":checkDate", c.checkDate);
+                query.bindValue(":illAbstract", c.illAbstract);
+                query.bindValue(":CheckResult", c.CheckResult);
+                query.bindValue(":patientIdentity",p.m_patientId);
+                // 执行 SQL 语句
+                if (!query.exec()) {
+                    qDebug() << "Failed to insert row:" << query.lastError().text();
+                }
+            }
+        }
+    }
+
+
+}
+*/
+
+const std::vector<PatientInfo>& DataManager::getPatients()
+{
+    if(currentPatient!=nullptr)
+    {
+        for(auto&& p:patients)
+        {
+            if(p.m_patientId==currentPatient->m_patientId)
+            {
+                p=*currentPatient;
+                break;
+            }
+        }
+    }
+
+    return patients;
+}
 
 
 

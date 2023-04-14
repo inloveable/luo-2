@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LogWidget</class>
+ <widget class="QDialog" name="LogWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>424</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QPushButton
+{
+	background-color: #20afe7;
+	color:&quot;black&quot;;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 11px;
+	border-color: #2082ff;
+	padding: 5px;
+
+}
+
+
+QPushButton::disabled
+{
+	background-color: #404040;
+	color: #656565;
+	border-color: #051a39;
+
+}
+
+
+QPushButton::hover
+{
+	background-color: #33bdff;
+	color: #ffffff;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 11px;
+	border-color: #2082ff;
+	padding: 5px;
+
+}
+
+
+QPushButton::pressed
+{
+	background-color: #2082ff;
+	color: #ffffff;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 11px;
+	border-color: #2082ff;
+	padding: 5px;
+
+}</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QTreeWidget" name="treeWidget">
+       <column>
+        <property name="text">
+         <string>病人</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>检查日期</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>检查科室</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>检查部位</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>检查结果</string>
+        </property>
+       </column>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>248</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton">
+         <property name="text">
+          <string>确定</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

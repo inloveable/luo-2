@@ -3,7 +3,9 @@
 #include"defs.h"
 #include"datamanager.h"
 #include<QMessageBox>
+#include "logwidget.hpp"
 #include"mainwindow.hpp"
+#include "qnamespace.h"
 #include<QFileDialog>
 #include<glog/logging.h>
 void QmlCommunicator::setCurrentPatient(QString identity)
@@ -120,4 +122,11 @@ int QmlCommunicator::intoTCTAnalize(){
     mainwindow->reEnter();
     mainwindow->show();
     return 0;
+}
+
+void QmlCommunicator::showLogWindow()
+{
+    LogWidget* dialog=new LogWidget(mainwindow);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->show();
 }

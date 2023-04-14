@@ -16,3 +16,9 @@ QString InputCheckInfoWidget::getIllAbstract()
 {
     return ui.textEdit->toPlainText();
 }
+
+void InputCheckInfoWidget::resetInput()
+{
+    ui.textEdit->clear();
+    ui.textEdit_2->clear();
+}

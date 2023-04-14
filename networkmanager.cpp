@@ -156,6 +156,7 @@ void NetworkManager::checkStatus()
     {
         LOG(INFO)<<"to post tiff finished";
         emit movingToNextStage();
+        emit letUiGeneratePostHtml();
     }
     else if(currentStatus==ANALIZE_STATUS::ERROR)
     {
@@ -167,12 +168,22 @@ void NetworkManager::checkStatus()
 void NetworkManager::analizing()
 {
     LOG(INFO)<<"anlizing。。。";
-    auto analize=new MedicalDetector(
+    MedicalDetector* analize;
+
+#if !ENABLE_MEDICAL_DETECTOR
+    analize=new MedicalDetector(
         [manager=this](int)
         {
            manager->currentStatus=ANALIZE_STATUS::ANALIZE;
            manager->checkStatus();
         });
+#elif
+    analize=new RealMedicalDetector([manager=this](int){
+        manager->currentStatus=ANALIZE_STATUS::ANALIZE;
+        manager->checkStatus();
+    });
+#endif
+
     QThreadPool::globalInstance()->start(analize);
 }
 
@@ -182,7 +193,7 @@ void NetworkManager::movingPost()
     const QString postTiff=DataManager::GetInstance()->getDirectoryPath(DataManager::DirectoryPath::POST_TIFF);
     auto generate=new GeneratePostImage(src,postTiff,[manager=this](int){
         manager->currentStatus=ANALIZE_STATUS::RECOVER_PYRAMID;
-        manager->checkStatus();
+        manager->checkStatus();//17@16_22.jpg
     });
 
     QThreadPool::globalInstance()->start(generate);

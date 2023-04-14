@@ -25,8 +25,8 @@ private:\
 struct PrintInfo{
     QString name;
     QString gender;
-    int age;
-    int id;
+    QString age;
+    QString id;
     QString ultrasonicCode;
     QString illAbstract;
     QString CheckResult;
@@ -40,7 +40,7 @@ struct PrintInfo{
     QString checkDoc;
     QString printDate;
     QString printDoc;
-    QString title;//Header;
+    QString title="标题";//Header;
     QString signaturePath;
 };
 

@@ -14,6 +14,15 @@ public:
     void run() override;
 };
 
+class RealMedicalDetector:public Runnables<std::function<void(int)>>
+{
+public:
+    RealMedicalDetector(std::function<void(int)>&& callback);
+
+    void run() override;
+
+};
+
 class GeneratePostImage:public Runnables<std::function<void(int)>>
 {
 public:

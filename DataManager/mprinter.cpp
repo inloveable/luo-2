@@ -25,7 +25,7 @@ void mPrinter::printCheckPDF(const QString& url,const PrintInfo& info)
 
     pdfWriter->setPageSize(QPageSize::A4);                  //设置纸张为A4纸
     pdfWriter->setResolution(QPrinter::ScreenResolution);           //设置分辨率 屏幕分辨率 打印机分辨率 高分辨率
-    pdfWriter->setPageMargins(QMarginsF(40, 40, 40, 40));           //设置页边距 顺序是:左上右下
+    pdfWriter->setPageMargins(QMarginsF(20, 20, 20, 20));           //设置页边距 顺序是:左上右下
 
 
      painter = new QPainter(pdfWriter);
@@ -57,8 +57,8 @@ void mPrinter::printCheckPDF(const QString& url,const PrintInfo& info)
                }
 
                //
-               painter->drawText(QRect(2400, 100, 4000, 300), titleStr1, option);
-               painter->drawText(QRect(3400,400,2000,300),titleStr2,option);
+           painter->drawText(QRect(2400, 100, 4000, 300), titleStr1, option);
+           painter->drawText(QRect(3400,400,2000,300),titleStr2,option);
         //距离左边3000,上面0,标题字宽度2100，标题字高450
 
         option.setAlignment(Qt::AlignLeft);
@@ -98,7 +98,7 @@ void mPrinter::printCheckPDF(const QString& url,const PrintInfo& info)
         painter->drawText(QRect(5000,2500,3000,300),info.ultrasonicCode,option);
 
         option.setWrapMode(QTextOption::WrapAnywhere);
-        painter->drawText(QRect(2000,4050,6000,1300),QString("%1").arg(info.illAbstract),option);
+        painter->drawText(QRect(1500,4050,6000,1300),QString("%1").arg(info.illAbstract),option);
 
 
         QPixmap map;
@@ -113,7 +113,7 @@ void mPrinter::printCheckPDF(const QString& url,const PrintInfo& info)
         option.setAlignment(Qt::AlignRight);
         painter->drawText(QRect(1000,7800,1000,300),QStringLiteral("检查结果: "),option);
         option.setAlignment(Qt::AlignLeft);
-        painter->drawText(QRect(2000,8100,6000,1300),info.CheckResult,option);
+        painter->drawText(QRect(1500,8100,6000,1300),info.CheckResult,option);
 
         option.setAlignment(Qt::AlignRight);
        // painter->drawText(QRect(1000,9500,1000,300),QStringLiteral("检查提示: "),option);
@@ -134,9 +134,6 @@ void mPrinter::printCheckPDF(const QString& url,const PrintInfo& info)
         painter->drawText(QRect(2000,10700,1200,300),info.checkDoc,option);
         painter->drawText(QRect(6000,11100,1200,300),info.printDate,option);
         painter->drawText(QRect(2000,11100,1200,300),info.checkDate,option);
-
-
-
 
     delete painter;
     delete pdfWriter;

@@ -30,6 +30,8 @@ public:
     Q_INVOKABLE void populatePatients();//INIT_FUNC
     Q_INVOKABLE void showMassageBox(QString message);
 
+    Q_INVOKABLE void showLogWindow();
+
 signals:
     void loginResult(bool result,QString message);
     void addPatientResult(bool result,QString message);

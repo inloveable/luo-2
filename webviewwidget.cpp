@@ -32,3 +32,16 @@ void WebViewWidget::setUrl(const QUrl& url)
     webView->setUrl(url);
 }
 
+QImage WebViewWidget::screenShot()
+{
+    return webView->grab().toImage();
+}
+
+void WebViewWidget::setFullScreen(bool val)
+{
+    if(val)
+        webView->showFullScreen();
+    else
+        webView->showNormal();
+}
+
