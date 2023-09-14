@@ -1,4 +1,4 @@
-import QtQuick
+﻿import QtQuick
 import QtQuick.Controls 2.0
 import myCpp 1.0
 ApplicationWindow{
@@ -93,7 +93,7 @@ ApplicationWindow{
             Image{
                 id:backgroundImage
                 anchors.fill: parent
-                source:"qrc:/resources/images/背景图.jpg"
+                source:"qrc:/resources/images/background.jpg"
                 fillMode: Image.Stretch
             }
 
@@ -197,7 +197,7 @@ ApplicationWindow{
 
                         Image{
                             anchors.fill: parent
-                            source:"qrc:/resources/images/PassWordIcon。.png"
+                            source:"qrc:/resources/images/passwordIcon.png"
                         }
 
                     }

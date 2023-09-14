@@ -65,16 +65,14 @@ void GeneratePostImage::run()
         QString pName=fileName.section("/",-1);
 
         auto list=pName.split("@");
-        qDebug()<<"NEXT:"<<fileName;
+
         if(list.size()<2){
             LOG(WARNING)<<"something mix up in output dir continuing:"<<fileName.toStdString();
             continue;
         }
         auto layer=list[0];
         auto picture=list[1];
-
-        qDebug()<<"COPYED FILENAME:"<<postTiff+"/"+DataManager::GetInstance()->getHashMark()+"_files/"+layer+"/"+picture;
-        qDebug()<<"copy result:"<<file.copy(postTiff+"/"+DataManager::GetInstance()->getHashMark()+"_files/"+layer+"/"+picture);
+        file.copy(postTiff+"/"+DataManager::GetInstance()->getHashMark()+"_files/"+layer+"/"+picture);
         file.remove();
     }
 

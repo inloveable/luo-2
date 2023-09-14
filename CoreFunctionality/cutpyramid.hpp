@@ -22,11 +22,11 @@ struct function_traits<std::function<R(Args...)>>
     using ArgumentTuple=std::tuple<Args...>;
 };
 
-template<typename Callback,typename... Args>
+template<typename Callback>
 class Runnables:public QRunnable{
 public:
 
-    using Function_type=Callback(Args...);
+    //using Function_type=Callback(Args...);
 
     using FunctionTuple=typename function_traits<Callback>::ArgumentTuple;
     Runnables(Callback&& callbeck):generalFlag(false),
@@ -79,6 +79,11 @@ private:
 class MovePictures:public Runnables<std::function<void(int sucess,qint64,qint64)>>
 {
 
+};
+
+class RecoverTiff:public Runnables<std::function<void(int sucess)>>
+{
+public:
 };
 
 

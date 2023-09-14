@@ -10,6 +10,9 @@ ProgressController::ProgressController(QObject *parent)
 }
 
 void ProgressController::start(){
+    currentStage=0;
+    currentVal=0;
+    updateProgressBar(currentVal);
     if(timer==nullptr)
     {
         timer=new QTimer(this);
@@ -31,10 +34,16 @@ void ProgressController::adoptProgressBar(QProgressBar* bar)
     connect(this,&ProgressController::updateProgressBar,bar,&QProgressBar::setValue);
 }
 
+void ProgressController::reset()
+{
+
+}
+
 bool ProgressController::moveToNextStage()
 {
-    LOG(INFO)<<"MOVING TO NEXT STAGE";
+
     ++currentStage;
+    LOG(INFO)<<"MOVING TO NEXT STAGE "<<currentStage<<"\\"<<this->stages;
     if(currentStage==stages)
     {
         currentStage=0;

@@ -13,7 +13,7 @@
 NetworkManager::NetworkManager(QObject *parent)
     : QObject{parent}
 {
-    DataManager::GetInstance()->setStages(7);
+    DataManager::GetInstance()->setStages(5);
     connect(this,&NetworkManager::movingToNextStage,DataManager::GetInstance(),&DataManager::moveToNextStage);
 }
 

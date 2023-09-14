@@ -17,6 +17,7 @@ find_package(glog REQUIRED)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets sql PrintSupport)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets  sql PrintSupport)
 
+
 set(PROJECT_SOURCES
     datamanager.h datamanager.cpp
 

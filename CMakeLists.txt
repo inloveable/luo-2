@@ -11,8 +11,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 list(APPEND CMAKE_PREFIX_PATH ./3rdparty/cuttedOpencv/)
-
-
 add_definitions(-DENABLE_MEDICAL_DETECTOR=OFF)
 
 

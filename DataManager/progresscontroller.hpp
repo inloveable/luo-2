@@ -21,7 +21,7 @@ public:
     void setProgressStage(int n){stages=n;};
     void start();
 
-
+    void reset();
 signals:
     void updateProgressBar(int val);
 private:

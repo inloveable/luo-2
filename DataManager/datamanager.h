@@ -59,6 +59,10 @@ public:
         {
             controller->moveToNextStage();
         }
+        else
+        {
+
+        }
     };
 
    //let all ui progressbars come here

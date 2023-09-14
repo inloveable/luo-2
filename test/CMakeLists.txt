@@ -4,7 +4,6 @@ project(TestDzSave LANGUAGES CXX)
 
 
 
-
 set(VIPSPATH ../3rdparty/vips-dev-8.14)
 
 include_directories(${VIPSPATH}/include)
