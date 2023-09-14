@@ -2,9 +2,9 @@
     <qresource prefix="/">
         <file>qml/FancyButton.qml</file>
         <file>qml/LoginWindow.qml</file>
-        <file>resources/images/PassWordIcon。.png</file>
+        <file>resources/images/passwordIcon.png</file>
         <file>resources/images/VisibilityIcon.png</file>
-        <file>resources/images/背景图.jpg</file>
+        <file>resources/images/background.jpg</file>
         <file>resources/images/logo.ico</file>
         <file>resources/images/userIcon.png</file>
         <file>qml/RegisterWidget.qml</file>
